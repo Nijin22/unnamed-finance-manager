@@ -14,12 +14,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:2.3.11'
+    implementation 'org.codehaus.groovy:groovy-all:2.4.16'
 
     // Jersey
     implementation 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.30'
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.30'
     testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-util:2.30'
+
+    // Test
+    testCompile "org.spockframework:spock-core:1.3-groovy-2.4"
 }
 
 

@@ -13,13 +13,27 @@ import java.util.logging.Logger;
 
 class Application {
     private URI baseUri;
+    private HttpServer server;
     private Logger logger;
 
     public static void main(String[] args) {
+
+        // Set base URI
+        URI baseUri;
         try {
-            new Application(new URI("http://localhost:8080")).startServer();
+            baseUri = new URI("http://localhost:8080");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+
+        Application mainApp = new Application(baseUri);
+        mainApp.startServer();
+
+        System.out.println("Application started. Stop the application using CTRL+C");
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -28,18 +42,18 @@ class Application {
         logger = Logger.getLogger(Application.class.getName());
     }
 
-    private void startServer() {
+    public void startServer() {
         try {
             final ResourceConfig resourceConfig = new ResourceConfig(RootResource.class);
-            final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, resourceConfig, false);
+            server = GrizzlyHttpServerFactory.createHttpServer(baseUri, resourceConfig, false);
             Runtime.getRuntime().addShutdownHook(new Thread(server::shutdownNow));
             server.start();
-
-            logger.info("Application started. Stop the application using CTRL+C");
-            Thread.currentThread().join();
-
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             logger.log(Level.SEVERE, null, e);
         }
+    }
+
+    public void stopServer() {
+        server.shutdownNow();
     }
 }
