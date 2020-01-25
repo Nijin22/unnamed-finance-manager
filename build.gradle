@@ -4,7 +4,7 @@ plugins {
     id 'application'
 }
 
-group 'info.dennis_weber.unnamed_finance_manager'
+group 'info.dennis_weber.unfima'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -28,6 +28,6 @@ dependencies {
 
 
 application {
-    mainClassName = 'info.dennis_weber.unnamed_finance_manager.api.Application'
+    mainClassName = 'info.dennis_weber.unfima.api.Application'
 }
 

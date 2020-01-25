@@ -1,4 +1,4 @@
-package info.dennis_weber.unnamed_finance_manager.api.resources.v1_0;
+package info.dennis_weber.unfima.api.resources.v1_0;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

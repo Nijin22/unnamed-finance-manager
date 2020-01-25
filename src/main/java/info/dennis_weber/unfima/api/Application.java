@@ -1,6 +1,6 @@
-package info.dennis_weber.unnamed_finance_manager.api;
+package info.dennis_weber.unfima.api;
 
-import info.dennis_weber.unnamed_finance_manager.api.resources.v1_0.RootResource;
+import info.dennis_weber.unfima.api.resources.v1_0.RootResource;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;

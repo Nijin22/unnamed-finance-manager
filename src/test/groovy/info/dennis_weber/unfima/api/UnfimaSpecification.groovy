@@ -1,4 +1,4 @@
-package info.dennis_weber.unnamed_finance_manager.api
+package info.dennis_weber.unfima.api
 
 import spock.lang.Specification
 

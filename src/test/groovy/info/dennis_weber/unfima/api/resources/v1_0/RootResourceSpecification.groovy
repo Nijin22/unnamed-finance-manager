@@ -1,6 +1,6 @@
-package info.dennis_weber.unnamed_finance_manager.api.resources.v1_0
+package info.dennis_weber.unfima.api.resources.v1_0
 
-import info.dennis_weber.unnamed_finance_manager.api.UnfimaSpecification
+import info.dennis_weber.unfima.api.UnfimaSpecification
 
 class RootResourceSpecification extends UnfimaSpecification {
     def "Calling the start page"() {
