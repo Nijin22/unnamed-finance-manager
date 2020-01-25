@@ -25,9 +25,12 @@ dependencies {
     testCompile "org.spockframework:spock-core:1.3-groovy-2.4"
 }
 
-
-
 application {
     mainClassName = 'info.dennis_weber.unfima.api.Application'
 }
 
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
