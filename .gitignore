@@ -1,0 +1,38 @@
+#####################################################################################
+# IntelliJ - see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839 #
+#####################################################################################
+# General user stuff
+.idea/**/workspace.xml
+.idea/**/usage.statistics.xml
+.idea/**/tasks.xml
+.idea/**/shelf
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Gradle and Maven with auto-import
+ .idea/artifacts
+ .idea/compiler.xml
+ .idea/jarRepositories.xml
+ .idea/modules.xml
+ .idea/*.iml
+ .idea/modules
+ *.iml
+ *.ipr
+
+# Output
+out/
+
+##########
+# Gradle #
+##########
+.gradle
+build/
+**/build/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
