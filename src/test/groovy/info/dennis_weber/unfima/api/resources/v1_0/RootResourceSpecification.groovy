@@ -10,5 +10,6 @@ class RootResourceSpecification extends UnfimaSpecification {
         expect:
         con.getResponseCode() == 200
         con.getInputStream().getText().contains("Hello World!")
+        1 == 2
     }
 }
