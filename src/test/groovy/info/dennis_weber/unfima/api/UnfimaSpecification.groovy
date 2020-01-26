@@ -11,7 +11,11 @@ abstract class UnfimaSpecification extends Specification {
     private List<HttpURLConnection> connections = []
 
     def setup() {
-        application = new Application(new URI(TEST_URL_BASE))
+        final String databaseJdbcUrl = "jdbc:h2:~/unfimaInMemoryTestDb;MODE=MySQL;DATABASE_TO_LOWER=TRUE"
+        final String databaseUsername = "sa"
+        final String databasePassword = null
+
+        application = new Application(new URI(TEST_URL_BASE), databaseJdbcUrl, databaseUsername, databasePassword, true)
         application.startServer()
     }
 
