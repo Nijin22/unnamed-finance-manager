@@ -2,7 +2,23 @@
 
 > TODO: Add documentation about what this application does.
 
-## Developer guide
+## Using this application
+
+### I'm a end-user
+This is the API backend for Unfima. That means, unless you are a hard-core programmer, you should try to find a
+Unfima App instead. 
+
+> TODO: Currently there are no such apps. Edit this section when there are any!
+
+### I'm a developer
+
+Great! This means you need to consume the API. Head over to the
+[Unfima API documentation](http://nijin22.github.io/unnamed-finance-manager) to learn how.
+
+You will also need a server that runs this API. Currently, there are none publicly available.
+Therefore you need to clone this project and keep reading to learn how to run it on your local computer.
+
+## Developing this application
 
 This git project is setup as a [IntelliJ](https://www.jetbrains.com/idea/) project.
 Therefore we suggest using this IDE and simply importing the entire repository.
