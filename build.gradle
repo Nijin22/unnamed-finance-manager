@@ -7,8 +7,6 @@ plugins {
 group 'info.dennis_weber.unfima'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
@@ -21,8 +19,14 @@ dependencies {
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.30'
     testImplementation 'org.glassfish.jersey.test-framework:jersey-test-framework-util:2.30'
 
+    // Database
+    implementation 'org.flywaydb:flyway-core:6.2.0'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.3'
+
+
     // Test
-    testCompile "org.spockframework:spock-core:1.3-groovy-2.4"
+    testCompile 'org.spockframework:spock-core:1.3-groovy-2.4'
+    testCompile 'com.h2database:h2:1.4.200' // Test-DB
 }
 
 application {
