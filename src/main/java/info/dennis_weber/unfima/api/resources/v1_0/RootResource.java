@@ -9,8 +9,22 @@ import javax.ws.rs.core.MediaType;
 public class RootResource {
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getRoot() {
-        return "Hello World!";
+    @Produces(MediaType.APPLICATION_JSON)
+    public RootResourceResult getRoot() {
+        RootResourceResult result = new RootResourceResult();
+        result.setApiVersion("1.0-SNAPSHOT");
+        return result;
+    }
+
+    private static class RootResourceResult {
+        private String apiVersion;
+
+        public String getApiVersion() {
+            return apiVersion;
+        }
+
+        public void setApiVersion(String apiVersion) {
+            this.apiVersion = apiVersion;
+        }
     }
 }
