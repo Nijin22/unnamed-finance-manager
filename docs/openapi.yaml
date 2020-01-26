@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  title: Unfima API
+  version: 1.0-SNAPSHOT
+  description: >-
+    The current work-in-progression API documentation for the finance manager
+    Unfima. This version of the documentation is a "SNAPSHOT" version, i.e. all
+    endpoints are still subject to change.
+  contact:
+    name: GitHub Issues
+    url: "https://github.com/Nijin22/unnamed-finance-manager/issues"
+servers:
+  - url: "http://localhost:8080"
+    description: "Local development environment"
+paths:
+  /:
+    get:
+      summary: "Get basic info about this application instance"
+      responses:
+        '200':
+          description: "Get basic info about this application instance"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: string
+                    example: "1.0-SNAPSHOT"
