@@ -13,17 +13,9 @@ servers:
   - url: "http://localhost:8080"
     description: "Local development environment"
 paths:
-  /:
+  /placeholder:
     get:
-      summary: "Get basic info about this application instance"
+      summary: "PLACEHOLDER_API_DOC_NOT_DONE"
       responses:
         '200':
-          description: "Get basic info about this application instance"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  apiVersion:
-                    type: string
-                    example: "1.0-SNAPSHOT"
+          description: "PLACEHOLDER_API_DOC_NOT_DONE"
