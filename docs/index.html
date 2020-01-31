@@ -1,11 +1,29 @@
-<!doctype html> <!-- Important: must specify -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 charecters -->
-    <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+    <meta charset="utf-8">
+    <title>Unfima API</title>
+    <link rel="stylesheet" href="./swagger-ui.css"/>
 </head>
 <body>
-    <rapi-doc spec-url="https://raw.githubusercontent.com/Nijin22/unnamed-finance-manager/master/docs/openapi.yaml">
-    </rapi-doc>
+<div id="swagger-ui"></div>
+
+<script src="./swagger-ui-bundle.js"></script>
+<script src="./swagger-ui-standalone-preset.js"></script>
+
+<script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: "./openapi.yaml",
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ]
+      })
+
+      window.ui = ui
+    }
+</script>
 </body>
 </html>
