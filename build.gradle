@@ -33,7 +33,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'info.dennis_weber.unfima.api.Application'
+    mainClassName = 'info.dennis_weber.unfima.api.Main'
 }
 
 test {
