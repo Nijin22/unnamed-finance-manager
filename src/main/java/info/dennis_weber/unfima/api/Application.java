@@ -5,7 +5,7 @@ import ratpack.server.RatpackServer;
 
 import java.util.logging.Logger;
 
-class Application {
+public class Application {
     private Logger logger;
     private Flyway flyway;
 
