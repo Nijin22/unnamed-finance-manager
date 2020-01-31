@@ -8,6 +8,7 @@ import java.util.logging.Logger
 class Application {
     private Logger logger
     private Flyway flyway
+    private boolean isRunning = false
 
     // database config
     private String databaseJdbcUrl
@@ -30,13 +31,23 @@ class Application {
         flyway = Flyway.configure().dataSource(databaseJdbcUrl, databaseUsername, databasePassword).load()
     }
 
-    void cleanupDatabase() {
+    /**
+     * Removes all data and structure from the connected database so it can be re-created.
+     *
+     * @throws IllegalStateException if the application is already running
+     */
+    void cleanupDatabase() throws IllegalStateException {
+        if (isRunning) {
+            throw new IllegalStateException("Can't clean database for a already running server.")
+        }
         flyway.clean()
-        // TODO: Throw exception when called while app is already running
-        // TODO: Javadoc
     }
 
     void startServer() throws Exception {
+        if (isRunning) {
+            throw new IllegalStateException("Can't start a already running application.")
+        }
+
         // Setup database
         flyway.migrate()
 
@@ -48,6 +59,8 @@ class Application {
                 }
             }
         }
+
+        isRunning = true
 
     }
 }
