@@ -61,15 +61,11 @@ class Application {
       server.handlers() { chain ->
         chain.with {
           get("") { ctx ->
-            ctx.render("Hello World")
+            ctx.render("Hello World") // TODO: Do something more useful. But what? Render documentation?
           }
 
+          // User accounts
           post("v1.0/users", new RegisterAccountHandler(dbService))
-          /*prefix("v1.0") {
-              prefix("users") {
-                  post(new RegisterAccountHandler())
-              }
-          }*/
         }
       }
     }
