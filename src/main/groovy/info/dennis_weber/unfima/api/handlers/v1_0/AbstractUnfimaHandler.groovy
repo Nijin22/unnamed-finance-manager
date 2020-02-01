@@ -1,5 +1,6 @@
 package info.dennis_weber.unfima.api.handlers.v1_0
 
+import groovy.json.JsonOutput
 import ratpack.groovy.handling.GroovyHandler
 import ratpack.handling.Context
 
@@ -15,8 +16,7 @@ abstract class AbstractUnfimaHandler extends GroovyHandler {
   static void errResp(Context ctx, int status, String errorMsg) {
     ctx.response.status(status)
     ctx.response.contentType("application/json")
-    Map<String, String> res = ["errorMsg": errorMsg]
-    ctx.render(res)
+    ctx.render(JsonOutput.toJson(["errorMsg": errorMsg]))
   }
 
 }
