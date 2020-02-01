@@ -13,9 +13,35 @@ servers:
   - url: "http://localhost:8080"
     description: "Local development environment"
 paths:
-  /placeholder:
-    get:
-      summary: "PLACEHOLDER_API_DOC_NOT_DONE"
+  /v1.0/users:
+    post:
+      summary: "Create a new user account"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: "User accounts are uniquely identified by this email address"
+                  example: "john.doe@example.org"
+                  maxLength: 255
+                password:
+                  type: string
+                  description: >
+                    The API doesn't check for secure passwords.
+                    We suggest clients check the [haveibeenpwned api](https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange)<br>
+                    The password ist limited to 100 characters to reduce DDOS possibilities.
+                    That said, 100 characters should be good enough for a secure password.
+                  example: "w237P7jnph9H7vkkxpKE"
+                  maxLength: 100
       responses:
-        '200':
-          description: "PLACEHOLDER_API_DOC_NOT_DONE"
+        "201":
+          description: "The new user account was created"
+        "400":
+          description: "The submitted data does not follow the schema"
+        "409":
+          description: "The account couldn't be created, because the email address is already in use"
+
