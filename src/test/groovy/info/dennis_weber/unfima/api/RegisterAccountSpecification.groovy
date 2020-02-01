@@ -15,17 +15,11 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
 
     when:
     String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec(new Action<RequestSpec>() {
-      @Override
-      void execute(RequestSpec requestSpec) throws Exception {
-        requestSpec.body(new Action<RequestSpec.Body>() {
-          @Override
-          void execute(RequestSpec.Body body) throws Exception {
-            body.type("application/json")
-            body.text(json)
-          }
-        })
-      }
+    client.requestSpec({
+      it.body({
+        it.type("application/json")
+        it.text(json)
+      })
     })
     ReceivedResponse resp = client.post("v1.0/users")
 
@@ -40,17 +34,11 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
 
     when:
     String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec(new Action<RequestSpec>() {
-      @Override
-      void execute(RequestSpec requestSpec) throws Exception {
-        requestSpec.body(new Action<RequestSpec.Body>() {
-          @Override
-          void execute(RequestSpec.Body body) throws Exception {
-            body.type("application/json")
-            body.text(json)
-          }
-        })
-      }
+    client.requestSpec({
+      it.body({
+        it.type("application/json")
+        it.text(json)
+      })
     })
     ReceivedResponse resp = client.post("v1.0/users")
 
