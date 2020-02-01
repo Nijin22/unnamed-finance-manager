@@ -44,6 +44,7 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
 
     then:
     resp.statusCode == 409
+    resp.body.text.contains("email address is already in use")
   }
 
   // TODO: Tests with bad request syntax
