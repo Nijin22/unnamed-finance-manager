@@ -10,6 +10,7 @@ buildscript {
 plugins {
     id 'idea'
     id 'io.ratpack.ratpack-groovy' version '1.7.6'
+    id 'jacoco' // code coverage reports
 }
 
 group 'info.dennis_weber.unfima'
@@ -42,5 +43,12 @@ application {
 test {
     testLogging {
         exceptionFormat = 'full'
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
     }
 }
