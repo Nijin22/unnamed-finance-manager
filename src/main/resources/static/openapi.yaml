@@ -38,6 +38,44 @@ components:
                 enum:
                   - NO_TOKEN_PROVIDED
                   - TOKEN_NOT_VALID
+    NotFound:
+      description: "The requested resource could not be found"
+  schemas:
+    CurrencyCode:
+      type: string
+      description: "Unique identifier for a currency"
+      example: "EUR"
+      minLength: 3
+      maxLength: 3
+    CurrencyBase:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CurrencyCode'
+        fullName:
+          type: string
+          example: "Euro"
+        symbol:
+          type: string
+          example: "€"
+        fractionalName:
+          type: string
+          example: "Cent"
+        decimalPlaces:
+          type: integer
+          example: 2
+    CurrencyRelativeValue:
+      type: number
+      example: 1.0
+      description: >
+        In Unfima all currencies can be converted to each other.
+        Their relation is set by this relative value.
+        The very first currency of a user is *highly* recommended to have a relative value of `1`.
+        <br><br>
+        Example: Your first currency is EUR, with a relative value of '1'.
+        Later you add USD and set their relative value to '0.91'.
+        If you then change the display currency to USD, your transaction for 25 EUR will show up with a
+        "equivalent value" of `25 * (1/0.91) = 27.47 USD`
 security:
   - bearerAuth: []
 paths:
@@ -162,3 +200,99 @@ paths:
                     example: "john.doe@example.org"
         "401":
           $ref: '#/components/responses/BadAuthentication'
+  /v1.0/currencies:
+    post:
+      summary: Create new currency
+      tags:
+        - Currencies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CurrencyBase'
+                - type: object
+                  properties:
+                    starterRelativeValue:
+                      $ref: '#/components/schemas/CurrencyRelativeValue'
+                  required:
+                    - fullName
+                    - code
+                    - symbol
+                    - fractionalName
+                    - decimalPlaces
+                    - relativeValue
+      responses:
+        "201":
+          description: "Currency succesfully created"
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+    get:
+      summary: "All currencies"
+      tags:
+        - Currencies
+      responses:
+        "200":
+          description: "All currencies of this user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/CurrencyBase'
+                    - type: object
+                      properties:
+                        currentRelativeValue:
+                          $ref: '#/components/schemas/CurrencyRelativeValue'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+  /v1.0/currencies/{currencyCode}:
+    parameters:
+      - name: currencyCode
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/CurrencyCode'
+    get:
+      summary: Info about this currency
+      tags:
+        - Currencies
+      responses:
+        "200":
+          description: "Info about this currency"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CurrencyBase'
+                  - type: object
+                    properties:
+                      currentRelativeValue:
+                        $ref: '#/components/schemas/CurrencyRelativeValue'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Modify this currency
+      tags:
+        - Currencies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrencyBase'
+      responses:
+        "204":
+          description: "Currency changed succefully"
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+        "404":
+          $ref: '#/components/responses/NotFound'
