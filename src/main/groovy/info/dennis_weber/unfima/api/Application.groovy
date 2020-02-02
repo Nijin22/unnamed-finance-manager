@@ -1,11 +1,15 @@
 package info.dennis_weber.unfima.api
 
+import com.google.inject.AbstractModule
+import com.google.inject.Injector
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.flywaydb.core.Flyway
 import ratpack.server.RatpackServer
 
 import java.util.logging.Logger
+
+import static com.google.inject.Guice.createInjector
 
 class Application {
   private Logger logger
@@ -53,8 +57,13 @@ class Application {
     // Setup database
     flyway.migrate()
 
-    // Setup Services
-    DatabaseService dbService = new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword)
+    // Setup services via Guice
+    Injector injector = createInjector(new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(DatabaseService).toInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
+      }
+    })
 
     // Start Ratpack Server
     RatpackServer.start() { server ->
@@ -65,7 +74,7 @@ class Application {
           }
 
           // User accounts
-          post("v1.0/users", new RegisterAccountHandler(dbService))
+          post("v1.0/users", injector.getInstance(RegisterAccountHandler)) // Register new account
         }
       }
     }

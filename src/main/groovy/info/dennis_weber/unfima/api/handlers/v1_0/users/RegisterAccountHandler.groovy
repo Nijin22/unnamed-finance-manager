@@ -1,5 +1,6 @@
 package info.dennis_weber.unfima.api.handlers.v1_0.users
 
+import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
@@ -10,11 +11,9 @@ import ratpack.groovy.handling.GroovyContext
 import java.sql.SQLIntegrityConstraintViolationException
 
 class RegisterAccountHandler extends AbstractUnfimaHandler {
-  private DatabaseService dbService
 
-  RegisterAccountHandler(DatabaseService dbService) {
-    this.dbService = dbService
-  }
+  @Inject
+  DatabaseService dbService
 
   @Override
   protected void handle(GroovyContext ctx) {

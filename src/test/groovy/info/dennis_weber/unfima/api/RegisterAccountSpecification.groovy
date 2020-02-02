@@ -3,9 +3,7 @@ package info.dennis_weber.unfima.api
 import groovy.json.JsonOutput
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
-import ratpack.func.Action
 import ratpack.http.client.ReceivedResponse
-import ratpack.http.client.RequestSpec
 
 class RegisterAccountSpecification extends AbstractUnfimaSpecification {
   def "registering a new account"() {
