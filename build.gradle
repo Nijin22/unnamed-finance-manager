@@ -28,6 +28,9 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:6.2.0' // Migrations
     testCompile 'com.h2database:h2:1.4.200' // Test-DB
 
+    // Password hashing
+    implementation 'org.mindrot:jbcrypt:0.4'
+
     // Test
     testCompile 'org.spockframework:spock-core:1.3-groovy-2.4'
 }

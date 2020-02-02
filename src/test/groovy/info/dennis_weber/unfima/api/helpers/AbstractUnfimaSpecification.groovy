@@ -5,11 +5,21 @@ import ratpack.test.http.TestHttpClient
 import spock.lang.Specification
 
 abstract class AbstractUnfimaSpecification extends Specification {
-    TestHttpClient client
+  TestHttpClient client
+  TestHttpClient authenticatedClient
 
-    def setup() {
-        // Create a client
-        ApplicationUnderTest aut = new UnfimaServerBackedApplicationUnderTest()
-        client = TestHttpClient.testHttpClient(aut)
-    }
+  def setup() {
+    // Start the application with a test environment
+    ApplicationUnderTest aut = new UnfimaServerBackedApplicationUnderTest()
+
+    // Create a client
+    client = TestHttpClient.testHttpClient(aut)
+
+    // Create a client for endpoints which require authentication
+    authenticatedClient = TestHttpClient.testHttpClient(aut, { reqSpec ->
+      reqSpec.headers({ headers ->
+        headers.set("Authorization", "Bearer ${UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.token}".toString())
+      })
+    })
+  }
 }

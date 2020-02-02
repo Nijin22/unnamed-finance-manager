@@ -4,7 +4,7 @@ import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 
 class RootSpecification extends AbstractUnfimaSpecification {
 
-    def "root is reachable"() {
+    def "Reaching the root site"() {
         when:
         client.get("/")
 
