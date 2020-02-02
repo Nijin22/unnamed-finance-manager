@@ -6,7 +6,7 @@ import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTe
 import ratpack.http.client.ReceivedResponse
 
 class RegisterAccountSpecification extends AbstractUnfimaSpecification {
-  def "registering a new account"() {
+  def "Registering a new account"() {
     given:
     String email = "a.new.user@to.add"
     String password = "password-in-tests"
@@ -106,7 +106,7 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     resp.body.text.contains("required parameter 'password' is missing")
   }
 
-  def "registering with a too long password"() {
+  def "Registering with a too long password"() {
     given:
     String email = "a.new.user@to.add"
     String password = "this is way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way," +
