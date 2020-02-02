@@ -3,6 +3,7 @@ package info.dennis_weber.unfima.api
 import com.google.inject.AbstractModule
 import com.google.inject.Injector
 import info.dennis_weber.unfima.api.handlers.v1_0.users.AuthenticateHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.flywaydb.core.Flyway
@@ -77,6 +78,7 @@ class Application {
           // User accounts
           post("v1.0/users", injector.getInstance(RegisterAccountHandler)) // Register new account
           post("v1.0/authenticate", injector.getInstance(AuthenticateHandler)) // Authenticate and get token
+          get("v1.0/users/me", injector.getInstance(BasicUserDetailsHandler)) // Basic user details
         }
       }
     }

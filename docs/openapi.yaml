@@ -22,6 +22,22 @@ components:
       description: >
         The data in the request body does not follow this endpoints schema.
         Additional details about the exact type of error MIGHT be provided in an error message.
+    BadAuthentication:
+      description: >
+        This endpoint requires authentication and it failed for some reason.
+        You can get a (new) token from the `/v1.0/authenticate` endpoint.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorMsg:
+                type: string
+              errorId:
+                type: string
+                enum:
+                  - NO_TOKEN_PROVIDED
+                  - TOKEN_NOT_VALID
 security:
   - bearerAuth: []
 paths:
@@ -126,3 +142,23 @@ paths:
                     enum:
                       - "USERNAME_UNKNOWN"
                       - "PASSWORD_DOES_NOT_MATCH"
+  /v1.0/users/me:
+    get:
+      summary: "Basic info about the current user"
+      tags:
+        - User Accounts
+      responses:
+        "200":
+          description: "Basic info about the current user"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                    example: "john.doe@example.org"
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
