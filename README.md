@@ -1,4 +1,5 @@
 # REST-API for Unfima - the personal finance manager
+[![codecov](https://codecov.io/gh/Nijin22/unnamed-finance-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/Nijin22/unnamed-finance-manager)
 
 > TODO: Add documentation about what this application does.
 
