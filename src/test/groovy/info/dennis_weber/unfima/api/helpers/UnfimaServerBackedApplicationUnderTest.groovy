@@ -2,6 +2,7 @@ package info.dennis_weber.unfima.api.helpers
 
 import groovy.sql.Sql
 import info.dennis_weber.unfima.api.Application
+import org.mindrot.jbcrypt.BCrypt
 import ratpack.server.RatpackServer
 import ratpack.test.ServerBackedApplicationUnderTest
 
@@ -42,10 +43,11 @@ class UnfimaServerBackedApplicationUnderTest extends ServerBackedApplicationUnde
 
   private void fillWithTestData() {
     Sql sql = Sql.newInstance(databaseJdbcUrl, databaseUsername, databasePassword)
+    String bcryptedPassword = BCrypt.hashpw(TEST_DATA.user.password, BCrypt.gensalt())
 
     // Test users
     sql.executeInsert(
         "INSERT INTO users (email, password) VALUES(?, ?);",
-        [TEST_DATA.user.email, TEST_DATA.user.password])
+        [TEST_DATA.user.email, bcryptedPassword])
   }
 }
