@@ -55,15 +55,19 @@ components:
         fullName:
           type: string
           example: "Euro"
+          maxLength: 255
         symbol:
           type: string
           example: "€"
+          maxLength: 255
         fractionalName:
           type: string
           example: "Cent"
+          maxLength: 255
         decimalPlaces:
           type: integer
           example: 2
+          maximum: 15
     CurrencyRelativeValue:
       type: number
       example: 1.0
