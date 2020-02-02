@@ -1,7 +1,14 @@
 # REST-API for Unfima - the personal finance manager
 [![codecov](https://codecov.io/gh/Nijin22/unnamed-finance-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/Nijin22/unnamed-finance-manager)
 
-> TODO: Add documentation about what this application does.
+Unfima is a self-hosted personal finance manager. I.e. the tool to choose if you want to get an overview over your
+income, expenses and open bills. It supports you making smart and future-proof financial decisions
+
+> NOTE: Early in development
+>
+> This project is still super early into devlopment and currently suited for end users. If you're interested in
+> contributing just open a [GitHub issue](https://github.com/Nijin22/unnamed-finance-manager/issues) and let me know
+> about your idea. I'll be sure to help you get anything working! :)
 
 ## Using this application
 
@@ -9,7 +16,7 @@
 This is the API backend for Unfima. That means, unless you are a hard-core programmer, you should try to find a
 Unfima App instead. 
 
-> TODO: Currently there are no such apps. Edit this section when there are any!
+Unfortunately, there are no such apps available yet, as we are super early in development. Stay tuned!
 
 ### I'm a developer
 
