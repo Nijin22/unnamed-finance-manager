@@ -1,8 +1,9 @@
 package info.dennis_weber.unfima.api.handlers.v1_0
 
-import groovy.json.JsonOutput
 import ratpack.groovy.handling.GroovyHandler
 import ratpack.handling.Context
+
+import static ratpack.jackson.Jackson.json
 
 abstract class AbstractUnfimaHandler extends GroovyHandler {
 
@@ -11,12 +12,18 @@ abstract class AbstractUnfimaHandler extends GroovyHandler {
    *
    * @param ctx context to write to
    * @param status HTTP code (e.g. 400)
-   * @param errorMsg text to show in response JSON
+   * @param errorMsg error description
+   * @param errorId (optional) error ID suitable for parsing
    */
-  static void errResp(Context ctx, int status, String errorMsg) {
+  static void errResp(Context ctx, int status, String errorMsg, String errorId = null) {
     ctx.response.status(status)
     ctx.response.contentType("application/json")
-    ctx.render(JsonOutput.toJson(["errorMsg": errorMsg]))
+    Map<String, String> response = ["errorMsg": errorMsg]
+    if (errorId != null) {
+      response.put("errorId", errorId)
+    }
+
+    ctx.render(json(response))
   }
 
 }
