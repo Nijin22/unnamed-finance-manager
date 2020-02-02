@@ -12,10 +12,25 @@ info:
 servers:
   - url: "http://localhost:8080"
     description: "Local development environment"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    BadFormat:
+      description: >
+        The data in the request body does not follow this endpoints schema.
+        Additional details about the exact type of error MIGHT be provided in an error message.
+security:
+  - bearerAuth: []
 paths:
   /v1.0/users:
     post:
       summary: "Create a new user account"
+      security: []
+      tags:
+        - User Accounts
       requestBody:
         required: true
         content:
@@ -31,17 +46,83 @@ paths:
                 password:
                   type: string
                   description: >
+                    A password the user will use in future to authenticate.<br><br>
+                    The password ist limited to 100 characters to reduce DOS attack possibilities.
+                    That said, 100 characters should be good enough for a secure password.<br><br>
                     The API doesn't check for secure passwords.
-                    We suggest clients check the [haveibeenpwned api](https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange)<br>
-                    The password ist limited to 100 characters to reduce DDOS possibilities.
-                    That said, 100 characters should be good enough for a secure password.
+                    We suggest clients check the [haveibeenpwned API](https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange).
                   example: "w237P7jnph9H7vkkxpKE"
                   maxLength: 100
       responses:
         "201":
-          description: "The new user account was created"
+          description: "The new user account was created."
         "400":
-          description: "The submitted data does not follow the schema"
+          $ref: '#/components/responses/BadFormat'
         "409":
-          description: "The account couldn't be created, because the email address is already in use"
-
+          description: "The account couldn't be created, because the email address is already in use."
+  /v1.0/authenticate:
+    post:
+      summary: "Authenticate an existing account"
+      security: []
+      tags:
+        - User Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "john.doe@example.org"
+                  maxLength: 255
+                password:
+                  type: string
+                  description: "The user's password "
+                  example: "w237P7jnph9H7vkkxpKE"
+                  maxLength: 100
+                clientIdentifier:
+                  type: string
+                  description: >
+                    A identifier for this client. Should include the application name and
+                    may include a user-chosen identifier
+                  example: "Unfima WebApp on 'Work-Computer'"
+      responses:
+        "200":
+          description: "Authentication successful."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bearerToken:
+                    type: string
+                    description: >
+                      A random string that is used to authenticate further calls.
+                      For all endpoints, that require authentication, send this string as part of the
+                      `Authorization` header.
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          description: >
+            Authentication failed as either the username was unknown,
+            or the password didn't match the username.
+          headers:
+            WWW-Authenticate:
+              schema:
+                type: string
+              description: "The authentication method that should be used"
+              example: Bearer realm="Unfima API"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMsg:
+                    type: string
+                  errorId:
+                    type: string
+                    enum:
+                      - "USERNAME_UNKNOWN"
+                      - "PASSWORD_DOES_NOT_MATCH"
