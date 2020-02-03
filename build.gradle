@@ -1,54 +1,63 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "io.ratpack:ratpack-gradle:1.7.5"
-    }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "io.ratpack:ratpack-gradle:1.7.5"
+  }
 }
 
 plugins {
-    id 'idea'
-    id 'io.ratpack.ratpack-groovy' version '1.7.6'
-    id 'jacoco' // code coverage reports
+  id 'idea'
+  id 'io.ratpack.ratpack-groovy' version '1.7.6'
+  id 'jacoco' // code coverage reports
+  id 'com.github.johnrengelman.shadow' version '5.2.0' // creating fat jars with all dependencies
 }
 
 group 'info.dennis_weber.unfima'
 version '1.0-SNAPSHOT'
 
 repositories {
-    jcenter()
+  jcenter()
 }
 
 dependencies {
-    // Logging (required for Ratpack)
-    runtime "org.slf4j:slf4j-simple:1.7.25"
+  // Logging (required for Ratpack)
+  runtime "org.slf4j:slf4j-simple:1.7.25"
 
-    // Database
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.3' // Main DB
-    implementation 'org.flywaydb:flyway-core:6.2.0' // Migrations
-    testCompile 'com.h2database:h2:1.4.200' // Test-DB
+  // Database
+  implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.3' // Main DB
+  implementation 'org.flywaydb:flyway-core:6.2.0' // Migrations
+  testCompile 'com.h2database:h2:1.4.200' // Test-DB
 
-    // Password hashing
-    implementation 'org.mindrot:jbcrypt:0.4'
+  // Password hashing
+  implementation 'org.mindrot:jbcrypt:0.4'
 
-    // Test
-    testCompile 'org.spockframework:spock-core:1.3-groovy-2.4'
+  // Test
+  testCompile 'org.spockframework:spock-core:1.3-groovy-2.4'
 }
 
 application {
-    mainClassName = 'info.dennis_weber.unfima.api.Main'
+  mainClassName = 'info.dennis_weber.unfima.api.Main'
 }
 
 test {
-    testLogging {
-        exceptionFormat = 'full'
-    }
+  testLogging {
+    exceptionFormat = 'full'
+  }
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
+  reports {
+    xml.enabled true
+    html.enabled false
+  }
 }
+
+// Output to build/libs/unfima-with-dependencies.jar
+shadowJar {
+  archiveBaseName.set('unfima-with-dependencies')
+  archiveClassifier.set('')
+  archiveVersion.set('')
+}
+
