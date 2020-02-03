@@ -1,0 +1,28 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TEMPLATE_EDIT_ENV_VARS" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="env">
+        <map>
+          <entry key="UNFIMA_DATABASE_JDBC_URL" value="jdbc:mariadb://localhost:3306/unfima" />
+          <entry key="UNFIMA_DATABASE_PASSWORD" value="&lt;CHANGE_ME_TO_YOUR_DATABASE&gt;" />
+          <entry key="UNFIMA_DATABASE_USERNAME" value="unfima" />
+        </map>
+      </option>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="--continuous" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="run" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+    <method v="2" />
+  </configuration>
+</component>

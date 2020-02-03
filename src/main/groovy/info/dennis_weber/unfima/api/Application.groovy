@@ -7,6 +7,7 @@ import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.flywaydb.core.Flyway
+import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
 
 import java.util.logging.Logger
@@ -69,11 +70,15 @@ class Application {
 
     // Start Ratpack Server
     RatpackServer.start() { server ->
+      server.serverConfig({ configBuilder ->
+        configBuilder.baseDir(BaseDir.find(".ratpackBaseDirMarker"))
+      })
       server.handlers() { chain ->
         chain.with {
-          get("") { ctx ->
-            ctx.render("Hello World") // TODO: Do something more useful. But what? Render documentation?
-          }
+          // static files
+          files({fileHandlerSpec ->
+            fileHandlerSpec.dir("static").indexFiles("index.html")
+          })
 
           // User accounts
           post("v1.0/users", injector.getInstance(RegisterAccountHandler)) // Register new account

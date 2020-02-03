@@ -20,25 +20,27 @@ Unfortunately, there are no such apps available yet, as we are super early in de
 
 ### I'm a developer
 
-Great! This means you need to consume the API. Head over to the
-[Unfima API documentation](http://nijin22.github.io/unnamed-finance-manager) to learn how.
-
-You will also need a server that runs this API. Currently, there are none publicly available.
+Great to hear that! You will need a server that runs this API. Currently, there are none publicly available.
 Therefore you need to clone this project and keep reading to learn how to run it on your local computer.
 
 ## Developing this application
 
-This git project is setup as a [IntelliJ](https://www.jetbrains.com/idea/) project.
+This git repository is set up as a [IntelliJ](https://www.jetbrains.com/idea/) project.
 Therefore we suggest using this IDE and simply importing the entire repository.
 
-### Run locally
-Either by starting the `Application` class from within your IDE, or running it via gradle.
+### Prerequisites
+* A Java 1.8 JDK
+* A [MariaDB](https://mariadb.org/) database, user and password.
+  In the next examples we assume they are both named "unfima"
 
-Note that you need to supply environmental variables for a MariaDb (or MySql) database connection
-and ensure that JAVA_HOME is set to a 1.8 JRE.
+### Run locally
+The easiest way is to duplicate the IntelliJ "launch configuration" `TEMPLATE_EDIT_ENV_VARS` and changing
+the environment variables.
 
 If you set "UNFIMA_DATABASE_CLEAN_ON_START" to "true", all data will be wiped from the database and
 the schema will be re-created. This might be helpful for developing but should NOT be set in productive environments.
+
+If you prefer, you can also simply use the command line:
 
 ```bash
 # Set your JAVA_HOME to a JRE 1.8
@@ -55,10 +57,11 @@ export UNFIMA_DATABASE_PASSWORD="<your_super_secret_password_here>"
 ./gradlew run
 ```
 
-### Run tests
-Either by running them through your IDE (IntelliJ: Right-click on the "test" folder and select "Run 'All Tests'"), or by running them via gradle.
+Once your application is running, you can visit http://localhost:5050 to access it. On its root path, the API
+documentation will be served.
 
-When running tests, the application will use a build-in in-memory database. No need to worry about credentials!
+### Run tests
+Either by running them through your IDE (IntelliJ: Use the `All Tests` run config"), or by running them via gradle.
 
 ```bash
 # Set your JAVA_HOME to a JRE 1.8
@@ -67,3 +70,5 @@ export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 # Run the application
 ./gradlew test
 ```
+
+When running tests, the application will use a build-in in-memory database. No need to worry about credentials!
