@@ -11,6 +11,7 @@ plugins {
     id 'idea'
     id 'io.ratpack.ratpack-groovy' version '1.7.6'
     id 'jacoco' // code coverage reports
+    id 'com.github.johnrengelman.shadow' version '5.2.0' // creating fat jars with all dependencies
 }
 
 group 'info.dennis_weber.unfima'
@@ -52,3 +53,11 @@ jacocoTestReport {
         html.enabled false
     }
 }
+
+// Output to build/libs/unfima-with-dependencies.jar
+shadowJar {
+    archiveBaseName.set('unfima-with-dependencies')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}
+
