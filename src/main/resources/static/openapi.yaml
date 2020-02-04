@@ -147,7 +147,7 @@ paths:
                   description: "The user's password "
                   example: "w237P7jnph9H7vkkxpKE"
                   maxLength: 100
-                clientIdentifier:
+                client:
                   type: string
                   description: >
                     A identifier for this client. Should include the application name and
