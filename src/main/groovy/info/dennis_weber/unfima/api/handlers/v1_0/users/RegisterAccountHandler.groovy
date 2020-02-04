@@ -26,18 +26,18 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
       body ->
         // verify email is set and valid
         if (body.email == null) {
-          throw new BadFormatException("required parameter 'email' is missing", null)
+          throw new BadFormatException("required parameter 'email' is missing")
         }
         if (body.email.length() > MAX_EMAIL_LENGTH) {
-          throw new BadFormatException("'email' parameter is too long.", null)
+          throw new BadFormatException("'email' parameter is too long.")
         }
 
         // Verify PW is set and valid
         if (body.password == null) {
-          throw new BadFormatException("required parameter 'password' is missing", null)
+          throw new BadFormatException("required parameter 'password' is missing")
         }
         if (body.password.length() > MAX_PASSWORD_LENGTH) {
-          throw new BadFormatException("'password' parameter is too long", null)
+          throw new BadFormatException("'password' parameter is too long")
         }
 
         // Convert password in a format save for storage
