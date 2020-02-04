@@ -1,6 +1,7 @@
 package info.dennis_weber.unfima.api
 
 import info.dennis_weber.unfima.api.handlers.v1_0.ExceptionHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.currencies.CreateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.AuthenticateHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
@@ -71,6 +72,7 @@ class Application {
         b.bind(RegisterAccountHandler)
         b.bind(AuthenticateHandler)
         b.bind(BasicUserDetailsHandler)
+        b.bind(CreateCurrencyHandler)
 
         // services
         b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
@@ -89,6 +91,9 @@ class Application {
           post("v1.0/users", RegisterAccountHandler) // Register new account
           post("v1.0/authenticate", AuthenticateHandler) // Authenticate and get token
           get("v1.0/users/me", BasicUserDetailsHandler) // Basic user details
+
+          // Currencies
+          post("v1.0/currencies", CreateCurrencyHandler)
 
           get("v1.0/err", { throw new RuntimeException("woops.") })
         }
