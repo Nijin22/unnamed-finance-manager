@@ -1,18 +1,17 @@
 package info.dennis_weber.unfima.api
 
-import com.google.inject.AbstractModule
-import com.google.inject.Injector
+import info.dennis_weber.unfima.api.handlers.v1_0.ExceptionHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.AuthenticateHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.flywaydb.core.Flyway
+import ratpack.error.ServerErrorHandler
+import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
 
 import java.util.logging.Logger
-
-import static com.google.inject.Guice.createInjector
 
 class Application {
   private Logger logger
@@ -60,30 +59,38 @@ class Application {
     // Setup database
     flyway.migrate()
 
-    // Setup services via Guice
-    Injector injector = createInjector(new AbstractModule() {
-      @Override
-      protected void configure() {
-        bind(DatabaseService).toInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
-      }
-    })
-
     // Start Ratpack Server
     RatpackServer.start() { server ->
       server.serverConfig({ configBuilder ->
         configBuilder.baseDir(BaseDir.find(".ratpackBaseDirMarker"))
       })
+      server.registry(Guice.registry({ b ->
+        // handlers
+        // I don't know why we have to bind handlers explicitly, according to the docs, Guice should be able
+        // to do that just-in-time: https://ratpack.io/manual/current/api/ratpack/guice/Guice.html
+        b.bind(RegisterAccountHandler)
+        b.bind(AuthenticateHandler)
+        b.bind(BasicUserDetailsHandler)
+
+        // services
+        b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
+
+        // custom error handler
+        b.bind(ServerErrorHandler.class, ExceptionHandler.class)
+      }))
       server.handlers() { chain ->
         chain.with {
           // static files
-          files({fileHandlerSpec ->
+          files({ fileHandlerSpec ->
             fileHandlerSpec.dir("static").indexFiles("index.html")
           })
 
           // User accounts
-          post("v1.0/users", injector.getInstance(RegisterAccountHandler)) // Register new account
-          post("v1.0/authenticate", injector.getInstance(AuthenticateHandler)) // Authenticate and get token
-          get("v1.0/users/me", injector.getInstance(BasicUserDetailsHandler)) // Basic user details
+          post("v1.0/users", RegisterAccountHandler) // Register new account
+          post("v1.0/authenticate", AuthenticateHandler) // Authenticate and get token
+          get("v1.0/users/me", BasicUserDetailsHandler) // Basic user details
+
+          get("v1.0/err", { throw new RuntimeException("woops.") })
         }
       }
     }

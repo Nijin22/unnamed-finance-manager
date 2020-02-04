@@ -1,8 +1,9 @@
 package info.dennis_weber.unfima.api.handlers.v1_0.users
 
 import com.google.inject.Inject
-import static ratpack.jackson.Jackson.json
 import groovy.sql.GroovyRowResult
+import info.dennis_weber.unfima.api.errors.BadAuthenticationException
+import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.mindrot.jbcrypt.BCrypt
@@ -10,6 +11,7 @@ import ratpack.groovy.handling.GroovyContext
 
 import java.security.SecureRandom
 
+import static ratpack.jackson.Jackson.json
 
 class AuthenticateHandler extends AbstractUnfimaHandler {
   private static final SecureRandom secureRandom = new SecureRandom()
@@ -24,22 +26,18 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
 
         // verify email and pw are in request is set and valid
         if (body.email == null) {
-          errResp(ctx, 400, "required parameter 'email' is missing")
-          return
+          throw new BadFormatException("required parameter 'email' is missing", null)
         }
         if (body.password == null) {
-          errResp(ctx, 400, "required parameter 'password' is missing")
-          return
+          throw new BadFormatException("required parameter 'password' is missing", null)
         }
 
         // verify client is present and valid
         if (body.client == null) {
-          errResp(ctx, 400, "required parameter 'client' is missing")
-          return
+          throw new BadFormatException("required parameter 'client' is missing", null)
         }
         if (body.client.size() > 255) {
-          errResp(ctx, 400, "'client' is ${body.client.size()} characters long, limit is 255.")
-          return
+          throw new BadFormatException("'client' is ${body.client.size()} characters long, limit is 255.", null)
         }
 
         // Get stored password
@@ -47,8 +45,7 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
         GroovyRowResult dbResult = dbService.getGroovySql().firstRow(selectPasswordStatement, [body.email])
         if (dbResult == null) {
           // no stored password found --> wrong username
-          errResp(ctx, 401, "Email address '$body.email' not found", "USERNAME_UNKNOWN")
-          return
+          throw new BadAuthenticationException("Email address '$body.email' not found", "USERNAME_UNKNOWN")
         }
         int userId = dbResult.get("id") as int
         String storedPw = new String(dbResult.get("password") as char[])
@@ -67,7 +64,7 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
           ctx.render(json(["bearerToken": token]))
         } else {
           // pw doesn't match
-          errResp(ctx, 401, "Password doesn't match email '$body.email'", "PASSWORD_DOES_NOT_MATCH")
+          throw new BadAuthenticationException("Password doesn't match email '$body.email'", "PASSWORD_DOES_NOT_MATCH")
         }
 
     })

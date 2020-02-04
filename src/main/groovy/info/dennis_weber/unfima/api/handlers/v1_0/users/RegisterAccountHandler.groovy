@@ -3,6 +3,8 @@ package info.dennis_weber.unfima.api.handlers.v1_0.users
 import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
+import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.ConflictException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.mindrot.jbcrypt.BCrypt
@@ -24,22 +26,18 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
       body ->
         // verify email is set and valid
         if (body.email == null) {
-          errResp(ctx, 400, "required parameter 'email' is missing")
-          return
+          throw new BadFormatException("required parameter 'email' is missing", null)
         }
         if (body.email.length() > MAX_EMAIL_LENGTH) {
-          errResp(ctx, 400, "'email' parameter is too long.")
-          return
+          throw new BadFormatException("'email' parameter is too long.", null)
         }
 
         // Verify PW is set and valid
         if (body.password == null) {
-          errResp(ctx, 400, "required parameter 'password' is missing")
-          return
+          throw new BadFormatException("required parameter 'password' is missing", null)
         }
         if (body.password.length() > MAX_PASSWORD_LENGTH) {
-          errResp(ctx, 400, "'password' parameter is too long")
-          return
+          throw new BadFormatException("'password' parameter is too long", null)
         }
 
         // Convert password in a format save for storage
@@ -49,8 +47,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
         String selectStatement = "SELECT COUNT(*) as count FROM `users` WHERE `email` = ?"
         GroovyRowResult row = dbService.getGroovySql().firstRow(selectStatement, [body.email])
         if (row.get("count") > 0) {
-          errResp(ctx, 409, "email address is already in use")
-          return
+          throw new ConflictException("email address is already in use", null)
         }
 
         // Store new users
@@ -61,8 +58,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
         } catch (SQLIntegrityConstraintViolationException e) {
           if (e.message.contains("'unique_emails'")) {
             // Email already in use. Immediately after checking for that. Geez, talk about bad luck...
-            errResp(ctx, 409, "email address is already in use")
-            return
+            throw new ConflictException("email address is already in use", null)
           } else {
             // Unless we add another constraint, this shouldn't really happen
             throw e

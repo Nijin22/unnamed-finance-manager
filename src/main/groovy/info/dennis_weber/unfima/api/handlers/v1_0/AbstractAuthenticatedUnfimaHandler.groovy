@@ -1,7 +1,8 @@
 package info.dennis_weber.unfima.api.handlers.v1_0
 
 import com.google.inject.Inject
-import groovy.sql.Sql
+import info.dennis_weber.unfima.api.errors.BadAuthenticationException
+import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.services.DatabaseService
 import ratpack.groovy.handling.GroovyContext
 
@@ -23,16 +24,14 @@ abstract class AbstractAuthenticatedUnfimaHandler extends AbstractUnfimaHandler 
       header = ctx.header("Authorization").get()
       token = header.split(" ")[1]
     } catch (Exception ignored) {
-      errResp(ctx, 401, "Failed to extract Authorization token.", "NO_TOKEN_PROVIDED")
-      return
+      throw new BadAuthenticationException("Failed to extract Authorization token.", "NO_TOKEN_PROVIDED")
     }
 
     // Verify token
     final String selectUserIdStatement = "SELECT userId FROM sessions WHERE token = ?"
     Integer userId = dbService.getGroovySql().firstRow(selectUserIdStatement, [token])?.get("userId") as Integer
     if (userId == null) {
-      errResp(ctx, 401, "Token '$token' is invalid.", "TOKEN_NOT_VALID")
-      return
+      throw new BadAuthenticationException("Token '$token' is invalid.", "TOKEN_NOT_VALID")
     }
 
     // Update lastUsageTimestamp in token
