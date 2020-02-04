@@ -41,24 +41,20 @@ components:
     NotFound:
       description: "The requested resource could not be found"
   schemas:
-    CurrencyCode:
-      type: string
+    CurrencyId:
+      type: integer
       description: "Unique identifier for a currency"
-      example: "EUR"
-      minLength: 3
-      maxLength: 3
+      example: 1
     CurrencyBase:
       type: object
       properties:
-        code:
-          $ref: '#/components/schemas/CurrencyCode'
+        shortName:
+          type: string
+          example: "€"
+          maxLength: 255
         fullName:
           type: string
           example: "Euro"
-          maxLength: 255
-        symbol:
-          type: string
-          example: "€"
           maxLength: 255
         fractionalName:
           type: string
@@ -80,6 +76,17 @@ components:
         Later you add USD and set their relative value to '0.91'.
         If you then change the display currency to USD, your transaction for 25 EUR will show up with a
         "equivalent value" of `25 * (1/0.91) = 27.47 USD`
+    CurrencyToReturn:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/CurrencyId'
+        - $ref: '#/components/schemas/CurrencyBase'
+        - type: object
+          properties:
+            currentRelativeValue:
+              $ref: '#/components/schemas/CurrencyRelativeValue'
 security:
   - bearerAuth: []
 paths:
@@ -221,12 +228,11 @@ paths:
                     starterRelativeValue:
                       $ref: '#/components/schemas/CurrencyRelativeValue'
                   required:
+                    - shortName
                     - fullName
-                    - code
-                    - symbol
                     - fractionalName
                     - decimalPlaces
-                    - relativeValue
+                    - starterRelativeValue
       responses:
         "201":
           description: "Currency succesfully created"
@@ -246,21 +252,16 @@ paths:
               schema:
                 type: array
                 items:
-                  allOf:
-                    - $ref: '#/components/schemas/CurrencyBase'
-                    - type: object
-                      properties:
-                        currentRelativeValue:
-                          $ref: '#/components/schemas/CurrencyRelativeValue'
+                  $ref: '#/components/schemas/CurrencyToReturn'
         "401":
           $ref: '#/components/responses/BadAuthentication'
-  /v1.0/currencies/{currencyCode}:
+  /v1.0/currencies/{currencyId}:
     parameters:
-      - name: currencyCode
+      - name: currencyId
         in: path
         required: true
         schema:
-          $ref: '#/components/schemas/CurrencyCode'
+          $ref: '#/components/schemas/CurrencyId'
     get:
       summary: Info about this currency
       tags:
@@ -271,12 +272,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/CurrencyBase'
-                  - type: object
-                    properties:
-                      currentRelativeValue:
-                        $ref: '#/components/schemas/CurrencyRelativeValue'
+                $ref: '#/components/schemas/CurrencyToReturn'
         "401":
           $ref: '#/components/responses/BadAuthentication'
         "404":
@@ -290,7 +286,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CurrencyBase'
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/CurrencyId'
+                - $ref: '#/components/schemas/CurrencyBase'
+              required:
+                - id
       responses:
         "204":
           description: "Currency changed succefully"
