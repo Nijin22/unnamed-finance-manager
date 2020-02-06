@@ -6,6 +6,7 @@ import info.dennis_weber.unfima.api.errors.BadAuthenticationException
 import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
+import info.dennis_weber.unfima.api.services.TimestampHelper
 import org.mindrot.jbcrypt.BCrypt
 import ratpack.groovy.handling.GroovyContext
 
@@ -56,7 +57,7 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
           // store token in database
           String token = generateNewToken()
           String insertTokenStatement = "INSERT INTO `sessions` (token, userId, client, creationTimestamp, lastUsageTimestamp) VALUES(?, ?, ?, ?, ?)"
-          int timestamp = (new Date().getTime() / 1000).toInteger()
+          long timestamp = TimestampHelper.getCurrentTimestamp()
           dbService.getGroovySql().executeInsert(insertTokenStatement, [token, userId, body.client, timestamp, timestamp])
 
           // render results
