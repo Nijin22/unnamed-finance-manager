@@ -1,4 +1,4 @@
-package info.dennis_weber.unfima.api
+package info.dennis_weber.unfima.api.users
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
