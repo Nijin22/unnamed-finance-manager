@@ -2,6 +2,7 @@
   <dictionary name="dennis">
     <words>
       <w>bcrypted</w>
+      <w>codecov</w>
       <w>guice</w>
       <w>jdbc</w>
       <w>ratpack</w>
