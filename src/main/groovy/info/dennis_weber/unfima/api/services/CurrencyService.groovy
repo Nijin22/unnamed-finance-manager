@@ -45,6 +45,23 @@ class CurrencyService {
       return null
     }
 
+    CurrencyDto dto = extractDtoFromSqlRow(row)
+    return dto
+  }
+
+  List<CurrencyDto> getAllCurrencies(int userId) {
+    String selectCurrenciesQuery = """SELECT * FROM currenciesWithCurrentExchangeRate
+                                    WHERE userId = ?""".stripIndent()
+    List<GroovyRowResult> rows = dbService.getGroovySql().rows(selectCurrenciesQuery, [userId])
+
+    List<CurrencyDto> result = []
+    rows.each {
+      result.add(extractDtoFromSqlRow(it))
+    }
+    return result
+  }
+
+  private static CurrencyDto extractDtoFromSqlRow(GroovyRowResult row) {
     CurrencyDto dto = new CurrencyDto()
     dto.id = row.get("currencyId") as int
     dto.shortName = row.get("shortName")
@@ -52,8 +69,7 @@ class CurrencyService {
     dto.fractionalName = row.get("fractionalName")
     dto.decimalPlaces = row.get("decimalPlaces") as int
     dto.currentRelativeValue = row.get("exchangeRate") as BigDecimal
-
-    return dto
+    dto
   }
 }
 
