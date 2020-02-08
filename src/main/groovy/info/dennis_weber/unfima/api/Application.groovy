@@ -4,6 +4,7 @@ import info.dennis_weber.unfima.api.handlers.v1_0.ExceptionHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.CreateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListAllCurrenciesHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListSingleCurrencyHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.currencies.UpdateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.AuthenticateHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
@@ -77,6 +78,7 @@ class Application {
         b.bind(CreateCurrencyHandler)
         b.bind(ListSingleCurrencyHandler)
         b.bind(ListAllCurrenciesHandler)
+        b.bind(UpdateCurrencyHandler)
 
         // services
         b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
@@ -104,7 +106,13 @@ class Application {
                 methodSpec.get(ListAllCurrenciesHandler)
               }
             }
-            c.get(":currencyId", ListSingleCurrencyHandler)
+
+            c.path(":currencyId") { ctx ->
+              ctx.byMethod() { methodSpec ->
+                methodSpec.get(ListSingleCurrencyHandler)
+                methodSpec.put(UpdateCurrencyHandler)
+              }
+            }
           })
 
           get("v1.0/err", { throw new RuntimeException("woops.") })

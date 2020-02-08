@@ -285,6 +285,9 @@ paths:
           $ref: '#/components/responses/NotFound'
     put:
       summary: Modify this currency
+      description: >
+        All *submitted* attributes  will be updated.
+        I.e. if you only want to change the 'shot name', submit a json map that only contains 'shortName' and nothing else.
       tags:
         - Currencies
       requestBody:
@@ -292,17 +295,10 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - type: object
-                  properties:
-                    id:
-                      $ref: '#/components/schemas/CurrencyId'
-                - $ref: '#/components/schemas/CurrencyBase'
-              required:
-                - id
+              $ref: '#/components/schemas/CurrencyBase'
       responses:
         "204":
-          description: "Currency changed succefully"
+          description: "Currency changed successfully"
         "400":
           $ref: '#/components/responses/BadFormat'
         "401":

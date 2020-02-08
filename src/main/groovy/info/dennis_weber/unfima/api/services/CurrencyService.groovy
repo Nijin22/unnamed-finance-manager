@@ -61,6 +61,42 @@ class CurrencyService {
     return result
   }
 
+  /**
+   * Updates a currency.
+   *
+   * @param currencyId currency to update
+   * @param dto a DTO with fields to update. Fields that should not be updated should be set to 'null'
+   */
+  void updateCurrency(int currencyId, CurrencyDto dto) {
+    String updateQuery = "UPDATE currencies SET "
+    List values = []
+
+    List possibleUpdateAttributes = ["shortName", "fullName", "fractionalName", "decimalPlaces"]
+    boolean alreadyHadOneAttribute = false
+    possibleUpdateAttributes.each { attr ->
+      def attrValue = dto.getProperty(attr)
+      if (attrValue != null) {
+        if (alreadyHadOneAttribute) {
+          updateQuery += ", " // add comma as a separator
+        }
+        updateQuery += "$attr=?"
+        values.add(attrValue)
+        alreadyHadOneAttribute = true
+      }
+    }
+
+    if (!alreadyHadOneAttribute) {
+      // no attributes are changed at all
+      return
+    }
+
+    updateQuery += "WHERE currencyId=?"
+    values.add(currencyId)
+
+    int updatedRows = dbService.getGroovySql().executeUpdate(updateQuery, values)
+    assert updatedRows == 1
+  }
+
   private static CurrencyDto extractDtoFromSqlRow(GroovyRowResult row) {
     CurrencyDto dto = new CurrencyDto()
     dto.id = row.get("currencyId") as int
@@ -69,16 +105,16 @@ class CurrencyService {
     dto.fractionalName = row.get("fractionalName")
     dto.decimalPlaces = row.get("decimalPlaces") as int
     dto.currentRelativeValue = row.get("exchangeRate") as BigDecimal
-    dto
+    return dto
   }
 }
 
 final class CurrencyDto implements MappableTrait {
-  int id
+  Integer id
   String shortName
   String fullName
   String fractionalName
-  int decimalPlaces
+  Integer decimalPlaces
   BigDecimal starterRelativeValue
   BigDecimal currentRelativeValue
 }
