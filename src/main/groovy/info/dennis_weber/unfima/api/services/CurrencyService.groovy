@@ -9,20 +9,6 @@ class CurrencyService {
   @Inject
   DatabaseService dbService
 
-  final String selectCurrenciesWithCurrentExchangeRateStatement = """\
-    SELECT currencies.*, rates.exchangeRate 
-    FROM currencyExchangeRate as rates
-    INNER JOIN
-        (SELECT currencyId, MAX(startTimestamp) AS maxCurrentTimestamp
-        FROM currencyExchangeRate
-        WHERE startTimestamp <= ? -- >>>>>>> Timestamp
-        GROUP BY currencyId) as maxCurrentTimestamps
-    ON rates.currencyId = maxCurrentTimestamps.currencyId AND rates.startTimestamp = maxCurrentTimestamps.maxCurrentTimestamp
-    INNER JOIN currencies 
-      ON rates.currencyId = currencies.currencyId
-    WHERE userId = ? -- >>>>>>> UserId
-    """.stripIndent()
-
   int createCurrency(CurrencyDto dto, int userId) {
     Sql sql = dbService.getGroovySql()
 
@@ -51,9 +37,10 @@ class CurrencyService {
    * @return the found currency, or null if not found or not the correct user
    */
   CurrencyDto getCurrency(int currencyId, int userId) {
-    String selectCurrencyQuery = selectCurrenciesWithCurrentExchangeRateStatement +
-        "AND currencies.currencyId = ?"
-    GroovyRowResult row = dbService.getGroovySql().firstRow(selectCurrencyQuery, [TimestampHelper.getCurrentTimestamp(), userId, currencyId])
+    String selectCurrencyQuery = """SELECT * FROM currenciesWithCurrentExchangeRate
+                                    WHERE userId = ?
+                                      AND currencyId = ?""".stripIndent()
+    GroovyRowResult row = dbService.getGroovySql().firstRow(selectCurrencyQuery, [userId, currencyId])
     if (row == null) {
       return null
     }
