@@ -1,4 +1,5 @@
 # REST-API for Unfima - the personal finance manager
+![Run tests with Gradle](https://github.com/Nijin22/unnamed-finance-manager/workflows/Run%20tests%20with%20Gradle/badge.svg)
 [![codecov](https://codecov.io/gh/Nijin22/unnamed-finance-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/Nijin22/unnamed-finance-manager)
 
 Unfima is a self-hosted personal finance manager. I.e. the tool to choose if you want to get an overview over your
