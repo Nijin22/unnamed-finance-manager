@@ -1,12 +1,15 @@
 package info.dennis_weber.unfima.api.handlers.v1_0.users
 
 import com.google.inject.Inject
+import groovy.json.JsonException
+import groovy.json.JsonSlurper
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.errors.ConflictException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
+import org.codehaus.groovy.runtime.typehandling.GroovyCastException
 import org.mindrot.jbcrypt.BCrypt
 import ratpack.groovy.handling.GroovyContext
 
@@ -22,30 +25,38 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
     final int MAX_EMAIL_LENGTH = 255
     final int MAX_PASSWORD_LENGTH = 100
 
-    ctx.parse(RequestBody.class).then({
-      body ->
+    ctx.request.body.then({ body ->
+      // Body missing?
+      if (body.contentType.type == null || body.text == null || body.text.empty) {
+        throw new BadFormatException("Request body is required but missing")
+      }
+
+      // Parse body
+      try {
+        RequestBody dto = new JsonSlurper().parseText(body.text) as RequestBody
+
         // verify email is set and valid
-        if (body.email == null) {
+        if (dto.email == null) {
           throw new BadFormatException("required parameter 'email' is missing")
         }
-        if (body.email.length() > MAX_EMAIL_LENGTH) {
+        if (dto.email.length() > MAX_EMAIL_LENGTH) {
           throw new BadFormatException("'email' parameter is too long.")
         }
 
         // Verify PW is set and valid
-        if (body.password == null) {
+        if (dto.password == null) {
           throw new BadFormatException("required parameter 'password' is missing")
         }
-        if (body.password.length() > MAX_PASSWORD_LENGTH) {
+        if (dto.password.length() > MAX_PASSWORD_LENGTH) {
           throw new BadFormatException("'password' parameter is too long")
         }
 
         // Convert password in a format save for storage
-        String hashedPassword = BCrypt.hashpw(body.password, BCrypt.gensalt())
+        String hashedPassword = BCrypt.hashpw(dto.password, BCrypt.gensalt())
 
         // Check if user is already in db
         String selectStatement = "SELECT COUNT(*) as count FROM `users` WHERE `email` = ?"
-        GroovyRowResult row = dbService.getGroovySql().firstRow(selectStatement, [body.email])
+        GroovyRowResult row = dbService.getGroovySql().firstRow(selectStatement, [dto.email])
         if (row.get("count") > 0) {
           throw new ConflictException("email address is already in use", null)
         }
@@ -54,7 +65,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
         Sql sql = dbService.getGroovySql()
         String insertStatement = "INSERT INTO `users` (email, password) VALUES (?, ?)"
         try {
-          sql.executeInsert(insertStatement, [body.email, hashedPassword])
+          sql.executeInsert(insertStatement, [dto.email, hashedPassword])
         } catch (SQLIntegrityConstraintViolationException e) {
           if (e.message.contains("'unique_emails'")) {
             // Email already in use. Immediately after checking for that. Geez, talk about bad luck...
@@ -67,6 +78,10 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
 
         ctx.response.status(201)
         ctx.response.send() // No content
+
+      } catch (GroovyCastException | JsonException ignored) {
+        throw new BadFormatException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
+      }
     })
   }
 
