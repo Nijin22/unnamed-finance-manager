@@ -38,13 +38,63 @@ components:
                 enum:
                   - NO_TOKEN_PROVIDED
                   - TOKEN_NOT_VALID
+    NotFound:
+      description: "The requested resource could not be found"
+  schemas:
+    CurrencyId:
+      type: integer
+      description: "Unique identifier for a currency"
+      example: 1
+    CurrencyBase:
+      type: object
+      properties:
+        shortName:
+          type: string
+          example: "€"
+          maxLength: 255
+        fullName:
+          type: string
+          example: "Euro"
+          maxLength: 255
+        fractionalName:
+          type: string
+          example: "Cent"
+          maxLength: 255
+        decimalPlaces:
+          type: integer
+          example: 2
+          maximum: 15
+    CurrencyRelativeValue:
+      type: number
+      example: 1.0
+      description: >
+        In Unfima all currencies can be converted to each other.
+        Their relation is set by this relative value.
+        The very first currency of a user is *highly* recommended to have a relative value of `1`.
+        <br><br>
+        Example: Your first currency is EUR, with a relative value of '1'.
+        Later you add USD and set their relative value to '0.91'.
+        If you then change the display currency to USD, your transaction for 25 EUR will show up with a
+        "equivalent value" of `25 * (1/0.91) = 27.47 USD`
+    CurrencyToReturn:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/CurrencyId'
+        - $ref: '#/components/schemas/CurrencyBase'
+        - type: object
+          properties:
+            currentRelativeValue:
+              $ref: '#/components/schemas/CurrencyRelativeValue'
 security:
   - bearerAuth: []
 paths:
   /v1.0/users:
     post:
-      summary: "Create a new user account"
-      security: []
+      summary: "Create new user account"
+      description: >
+        Creates a new user account with login credentials (email & password) and a starter currency.
       tags:
         - User Accounts
       requestBody:
@@ -69,6 +119,15 @@ paths:
                     We suggest clients check the [haveibeenpwned API](https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange).
                   example: "w237P7jnph9H7vkkxpKE"
                   maxLength: 100
+                starterCurrency:
+                  allOf:
+                    - $ref: '#/components/schemas/CurrencyBase'
+                    - type: object
+                      required:
+                        - shortName
+                        - fullName
+                        - fractionalName
+                        - decimalPlaces
       responses:
         "201":
           description: "The new user account was created."
@@ -98,7 +157,7 @@ paths:
                   description: "The user's password "
                   example: "w237P7jnph9H7vkkxpKE"
                   maxLength: 100
-                clientIdentifier:
+                client:
                   type: string
                   description: >
                     A identifier for this client. Should include the application name and
@@ -162,3 +221,97 @@ paths:
                     example: "john.doe@example.org"
         "401":
           $ref: '#/components/responses/BadAuthentication'
+  /v1.0/currencies:
+    post:
+      summary: Create new currency
+      tags:
+        - Currencies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CurrencyBase'
+                - type: object
+                  properties:
+                    starterRelativeValue:
+                      $ref: '#/components/schemas/CurrencyRelativeValue'
+                  required:
+                    - shortName
+                    - fullName
+                    - fractionalName
+                    - decimalPlaces
+                    - starterRelativeValue
+      responses:
+        "201":
+          description: "Currency succesfully created"
+          content:
+            application/json:
+              schema:
+                description: The ID of the newly created currency
+                type: integer
+                example: 1
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+    get:
+      summary: "All currencies"
+      tags:
+        - Currencies
+      responses:
+        "200":
+          description: "All currencies of this user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CurrencyToReturn'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+  /v1.0/currencies/{currencyId}:
+    parameters:
+      - name: currencyId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/CurrencyId'
+    get:
+      summary: Info about this currency
+      tags:
+        - Currencies
+      responses:
+        "200":
+          description: "Info about this currency"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyToReturn'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Modify this currency
+      description: >
+        All *submitted* attributes  will be updated.
+        I.e. if you only want to change the 'shot name', submit a json map that only contains 'shortName' and nothing else.
+      tags:
+        - Currencies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrencyBase'
+      responses:
+        "204":
+          description: "Currency changed successfully"
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+        "404":
+          $ref: '#/components/responses/NotFound'

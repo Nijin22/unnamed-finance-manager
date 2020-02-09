@@ -6,6 +6,7 @@ import info.dennis_weber.unfima.api.errors.BadAuthenticationException
 import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.DatabaseService
+import info.dennis_weber.unfima.api.services.TimestampHelper
 import org.mindrot.jbcrypt.BCrypt
 import ratpack.groovy.handling.GroovyContext
 
@@ -26,18 +27,18 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
 
         // verify email and pw are in request is set and valid
         if (body.email == null) {
-          throw new BadFormatException("required parameter 'email' is missing", null)
+          throw new BadFormatException("required parameter 'email' is missing")
         }
         if (body.password == null) {
-          throw new BadFormatException("required parameter 'password' is missing", null)
+          throw new BadFormatException("required parameter 'password' is missing")
         }
 
         // verify client is present and valid
         if (body.client == null) {
-          throw new BadFormatException("required parameter 'client' is missing", null)
+          throw new BadFormatException("required parameter 'client' is missing")
         }
         if (body.client.size() > 255) {
-          throw new BadFormatException("'client' is ${body.client.size()} characters long, limit is 255.", null)
+          throw new BadFormatException("'client' is ${body.client.size()} characters long, limit is 255.")
         }
 
         // Get stored password
@@ -56,7 +57,7 @@ class AuthenticateHandler extends AbstractUnfimaHandler {
           // store token in database
           String token = generateNewToken()
           String insertTokenStatement = "INSERT INTO `sessions` (token, userId, client, creationTimestamp, lastUsageTimestamp) VALUES(?, ?, ?, ?, ?)"
-          int timestamp = (new Date().getTime() / 1000).toInteger()
+          long timestamp = TimestampHelper.getCurrentTimestamp()
           dbService.getGroovySql().executeInsert(insertTokenStatement, [token, userId, body.client, timestamp, timestamp])
 
           // render results

@@ -2,8 +2,8 @@ package info.dennis_weber.unfima.api.handlers.v1_0
 
 import com.google.inject.Inject
 import info.dennis_weber.unfima.api.errors.BadAuthenticationException
-import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.services.DatabaseService
+import info.dennis_weber.unfima.api.services.TimestampHelper
 import ratpack.groovy.handling.GroovyContext
 
 /**
@@ -36,7 +36,7 @@ abstract class AbstractAuthenticatedUnfimaHandler extends AbstractUnfimaHandler 
 
     // Update lastUsageTimestamp in token
     final String updateTimestampStatement = "UPDATE sessions SET lastUsageTimestamp = ? WHERE token = ?"
-    long timestamp = (new Date().getTime() / 1000) as long
+    long timestamp = TimestampHelper.getCurrentTimestamp()
     dbService.groovySql.executeUpdate(updateTimestampStatement, [timestamp, token])
 
     handleAuthenticated(ctx, userId)
