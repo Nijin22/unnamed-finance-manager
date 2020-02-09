@@ -92,8 +92,9 @@ security:
 paths:
   /v1.0/users:
     post:
-      summary: "Create a new user account"
-      security: []
+      summary: "Create new user account"
+      description: >
+        Creates a new user account with login credentials (email & password) and a starter currency.
       tags:
         - User Accounts
       requestBody:
@@ -118,6 +119,15 @@ paths:
                     We suggest clients check the [haveibeenpwned API](https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange).
                   example: "w237P7jnph9H7vkkxpKE"
                   maxLength: 100
+                starterCurrency:
+                  allOf:
+                    - $ref: '#/components/schemas/CurrencyBase'
+                    - type: object
+                      required:
+                        - shortName
+                        - fullName
+                        - fractionalName
+                        - decimalPlaces
       responses:
         "201":
           description: "The new user account was created."

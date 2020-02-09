@@ -8,6 +8,8 @@ import groovy.sql.Sql
 import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.errors.ConflictException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
+import info.dennis_weber.unfima.api.services.CurrencyDto
+import info.dennis_weber.unfima.api.services.CurrencyService
 import info.dennis_weber.unfima.api.services.DatabaseService
 import org.codehaus.groovy.runtime.typehandling.GroovyCastException
 import org.mindrot.jbcrypt.BCrypt
@@ -19,6 +21,9 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
 
   @Inject
   DatabaseService dbService
+
+  @Inject
+  CurrencyService currencyService
 
   @Override
   protected void handle(GroovyContext ctx) {
@@ -51,6 +56,15 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
           throw new BadFormatException("'password' parameter is too long")
         }
 
+        // Verify all required currency values are set
+        if (dto.starterCurrency == null) throw new BadFormatException("required parameter 'starterCurrency' is missing")
+        List requiredValues = ["shortName", "fullName", "fractionalName", "decimalPlaces"]
+        requiredValues.each {
+          if (dto.starterCurrency.getProperty(it) == null) {
+            throw new BadFormatException("required parameter '$it' of 'starterCurrency' is missing.")
+          }
+        }
+
         // Convert password in a format save for storage
         String hashedPassword = BCrypt.hashpw(dto.password, BCrypt.gensalt())
 
@@ -61,11 +75,31 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
           throw new ConflictException("email address is already in use", null)
         }
 
-        // Store new users
+        // Store new user
         Sql sql = dbService.getGroovySql()
         String insertStatement = "INSERT INTO `users` (email, password) VALUES (?, ?)"
         try {
-          sql.executeInsert(insertStatement, [dto.email, hashedPassword])
+          def keys = sql.executeInsert(insertStatement, [dto.email, hashedPassword])
+          int userId = keys[0][0] as int
+
+          try {
+            // Store currency for user
+            // the first currency should have a exchange rate of '1':
+            dto.starterCurrency.starterRelativeValue = new BigDecimal(1)
+            int currencyId = currencyService.createCurrency(dto.starterCurrency, userId)
+
+            // Set default currency
+            dbService.getGroovySql().executeUpdate(
+                "UPDATE users SET defaultCurrency=? WHERE id=?",
+                [currencyId, userId]
+            )
+          } catch (Exception e) {
+            // Something failed when creating the starter currency. --> Delete the user again.
+            sql.execute("DELETE FROM users WHERE id=?", [userId])
+            throw e
+          }
+
+
         } catch (SQLIntegrityConstraintViolationException e) {
           if (e.message.contains("'unique_emails'")) {
             // Email already in use. Immediately after checking for that. Geez, talk about bad luck...
@@ -88,5 +122,6 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
   static private class RequestBody {
     String email
     String password
+    CurrencyDto starterCurrency
   }
 }

@@ -3,12 +3,20 @@ package info.dennis_weber.unfima.api.services
 import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
+import info.dennis_weber.unfima.api.errors.BadFormatException
 import info.dennis_weber.unfima.api.helpers.MappableTrait
 
 class CurrencyService {
   @Inject
   DatabaseService dbService
 
+  /**
+   * Create a new currency for a user
+   *
+   * @param dto
+   * @param userId
+   * @return if of the newly created currency
+   */
   int createCurrency(CurrencyDto dto, int userId) {
     Sql sql = dbService.getGroovySql()
 
@@ -117,4 +125,39 @@ final class CurrencyDto implements MappableTrait {
   Integer decimalPlaces
   BigDecimal starterRelativeValue
   BigDecimal currentRelativeValue
+
+  //////////////////////
+  // Checked Setters: //
+  //////////////////////
+
+  void setShortName(String shortName) {
+    if (shortName != null && shortName.length() > 255) {
+      throw new BadFormatException("Supported maximum length for 'shortName' is 255. " +
+          "The requested shortName '$shortName' is ${shortName.length()} charcters long.")
+    }
+    this.shortName = shortName
+  }
+
+  void setFullName(String fullName) {
+    if (fullName != null && fullName.length() > 255) {
+      throw new BadFormatException("Supported maximum length for 'fullName' is 255. " +
+          "The requested fullName '$fullName' is ${fullName.length()} charcters long.")
+    }
+    this.fullName = fullName
+  }
+
+  void setFractionalName(String fractionalName) {
+    if (fractionalName != null && fractionalName.length() > 255) {
+      throw new BadFormatException("Supported maximum length for 'fractionalName' is 255. " +
+          "The requested fractionalName '$fractionalName' is ${fractionalName.length()} charcters long.")
+    }
+    this.fractionalName = fractionalName
+  }
+
+  void setDecimalPlaces(Integer decimalPlaces) {
+    if (decimalPlaces != null && decimalPlaces > 15) {
+      throw new BadFormatException("Supported maximum for 'decimalPlaces' is 15. You specified '$decimalPlaces'")
+    }
+    this.decimalPlaces = decimalPlaces
+  }
 }

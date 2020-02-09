@@ -43,7 +43,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     String newShortName = "XBT"
     String newFullName = "Bitcoin"
     String newFractionalName = "Satoshi"
-    String newDecimalPlaces = 8
+    int newDecimalPlaces = 8
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     String json = JsonOutput.toJson([
         "shortName"     : newShortName,
