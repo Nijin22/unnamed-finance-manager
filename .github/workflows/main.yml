@@ -1,0 +1,36 @@
+name: Run tests with Gradle
+
+on: [push]
+
+jobs:
+  buildAndTest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v1
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Build with Gradle
+      run: ./gradlew clean clean compileGroovy compileJava
+    - name: Test with Gradle
+      run: ./gradlew test jacocoTestReport
+    - name: Upload code coverage to codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        fail_ci_if_error: true
+    - name: Build fat jar
+      run: ./gradlew shadowJar
+    - name: Publish Docker Image to GitHub Package Registry (GPR)
+      uses: machine-learning-apps/gpr-docker-publish@master
+      id: docker
+      with:
+        IMAGE_NAME: 'unfima'
+        DOCKERFILE_PATH: 'Dockerfile'
+        BUILD_CONTEXT: './'
+        BRANCH_TAG: true
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
