@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="UNFIMA_DATABASE_JDBC_URL" value="jdbc:mariadb://localhost:3306/unfima" />
+          <entry key="UNFIMA_DATABASE_JDBC_URL" value="jdbc:mysql://localhost:3306/unfima" />
           <entry key="UNFIMA_DATABASE_PASSWORD" value="&lt;CHANGE_ME_TO_YOUR_DATABASE&gt;" />
           <entry key="UNFIMA_DATABASE_USERNAME" value="unfima" />
         </map>

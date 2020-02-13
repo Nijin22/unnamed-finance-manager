@@ -25,12 +25,14 @@ dependencies {
   // Logging (required for Ratpack)
   runtime "org.slf4j:slf4j-simple:1.7.25"
 
-  // Database
-  implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.3' // Main DB
-  implementation 'mysql:mysql-connector-java:8.0.19' // MySql - for Google Cloud
+  // Databases
+  // Note that we do use MySql drivers, even if we might use a MariaDb database. That's because Google Cloud Run
+  // only works with the MySql drivers and we can't use both at the same time. MySql drivers also work for MariaDb, so
+  // we simply use them.
+  implementation 'mysql:mysql-connector-java:8.0.19' // MySql Drivers
   implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.0.15' // DB on Google Cloud
-  implementation 'org.flywaydb:flyway-core:6.2.0' // Migrations
-  testCompile 'com.h2database:h2:1.4.200' // Test-DB
+  implementation 'org.flywaydb:flyway-core:6.2.0' // DB migrations / upgrades to schemas via Flyway
+  testCompile 'com.h2database:h2:1.4.200' // In-memory DB used during tests
 
   // Password hashing
   implementation 'org.mindrot:jbcrypt:0.4'
