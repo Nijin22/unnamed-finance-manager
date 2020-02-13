@@ -68,3 +68,30 @@ jobs:
           BRANCH_TAG: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  deployOnGoogleCloud:
+    # if: contains(github.ref, 'master') # Only do that on push to master
+    needs: package
+    runs-on: ubuntu-latest
+    env:
+      GCR_PROJECT_ID: aqueous-helper-268113
+      GCR_SERVICE: unfima
+    steps:
+      - name: Download image from GitHub
+        run: docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}
+      - name: Tag for GCR
+        run: docker tag unfima:${GITHUB_REF##*/} gcr.io/${GCR_PROJECT_ID}/${GCR_SERVICE}:${GITHUB_REF##*/}
+      - name: Create env file
+        run: >
+          echo "UNFIMA_DATABASE_PASSWORD=${{secrets.GCLOUD_SQL_PASSWORD}}" > gcr.env;
+          echo "UNFIMA_DATABASE_USERNAME=unfima" >> gcr.env
+          echo "UNFIMA_DATABASE_JDBC_URL=jdbc:mysql:///unfima?cloudSqlInstance=aqueous-helper-268113:us-central1:unfima&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false" >> gcr.env
+      - name: Deploy service to Cloud Run
+        uses: stefda/action-cloud-run@v1.0
+        with:
+          image: gcr.io/${GCR_PROJECT_ID}/unfima:${GITHUB_REF##*/}
+          service: ${GCR_SERVICE}
+          project: ${GCR_PROJECT_ID}
+          region: us-central1
+          env: gcr.env
+          service key: ${{secrets.GCLOUD_AUTH}}
