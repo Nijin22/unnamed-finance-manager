@@ -73,31 +73,33 @@ jobs:
     # if: contains(github.ref, 'master') # Only do that on push to master TODO: RE-ENABLE
     needs: [package, test]
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: aqueous-helper-268113
+      RUN_REGION: us-central1
+      SERVICE_NAME: unfima
     steps:
       - name: Authenticate at GitHub releases
         run: docker login -u nijin22 -p ${{secrets.GITHUB_TOKEN}} docker.pkg.github.com
-      - name: Output branch name
-        run: echo running on branch ${GITHUB_REF##*/}
       - name: Download image from GitHub
-        run: >
-          echo "Pulling: docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}";
-          docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}
+        run: docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}
       - name: Tag for GCR
-        run: >
-          docker tag docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/} gcr.io/aqueous-helper-268113/unfima:${GITHUB_REF##*/};
-          echo "Tagged as >>> gcr.io/aqueous-helper-268113/unfima:${GITHUB_REF##*/} <<<"
-      - name: Create env file
-        run: >
-          echo "UNFIMA_DATABASE_PASSWORD=${{secrets.GCLOUD_SQL_PASSWORD}}" > gcr.env;
-          echo "UNFIMA_DATABASE_USERNAME=unfima" >> gcr.env;
-          echo "UNFIMA_DATABASE_JDBC_URL=jdbc:mysql:///unfima?cloudSqlInstance=aqueous-helper-268113:us-central1:unfima&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false" >> gcr.env;
-          echo "File created.";
-      - name: Deploy service to Cloud Run
-        uses: stefda/action-cloud-run@v1.0
+        run: docker tag docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/} gcr.io/${PROJECT_ID}/${SERVICE_NAME}:${GITHUB_REF##*/}
+      - name: Setup GCloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          image: gcr.io/aqueous-helper-268113/unfima:${GITHUB_REF##*/}
-          service: unfima
-          project: aqueous-helper-268113
-          region: us-central1
-          env: gcr.env
-          service key: ${{secrets.GCLOUD_AUTH}}
+          version: '275.0.0'
+          service_account_email: ${{secrets.GCLOUD_EMAIL}}
+          service_account_key: ${{secrets.GCLOUD_CREDENTIALS}}
+      - name: Configure gcloud CLI
+        run: >
+          gcloud config set project $PROJECT_ID;
+          gcloud auth configure-docker;
+      - name: Push to GCR
+        run: docker push gcr.io/${PROJECT_ID}/${SERVICE_NAME}:${GITHUB_REF##*/}
+      - name: Deploy service to Google Cloud Run
+        run: >
+          gcloud run deploy $SERVICE_NAME \
+            --region $RUN_REGION \
+            --image gcr.io/${PROJECT_ID}/${SERVICE_NAME}:${GITHUB_REF##*/} \
+            --platform managed
+
