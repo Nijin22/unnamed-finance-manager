@@ -82,7 +82,7 @@ jobs:
       - name: Download image from GitHub
         run: docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}
       - name: Tag for GCR
-        run: docker tag unfima:${GITHUB_REF##*/} gcr.io/${GCR_PROJECT_ID}/${GCR_SERVICE}:${GITHUB_REF##*/}
+        run: docker tag docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/} gcr.io/${GCR_PROJECT_ID}/${GCR_SERVICE}:${GITHUB_REF##*/}
       - name: Create env file
         run: >
           echo "UNFIMA_DATABASE_PASSWORD=${{secrets.GCLOUD_SQL_PASSWORD}}" > gcr.env;
