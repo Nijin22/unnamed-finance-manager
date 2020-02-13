@@ -5,7 +5,7 @@
 Unfima is a self-hosted personal finance manager. I.e. the tool to choose if you want to get an overview over your
 income, expenses and open bills. It supports you making smart and future-proof financial decisions
 
-> NOTE: Early in development
+> **NOTE: Early in development**
 >
 > This project is still super early into devlopment and currently suited for end users. If you're interested in
 > contributing just open a [GitHub issue](https://github.com/Nijin22/unnamed-finance-manager/issues) and let me know
@@ -21,8 +21,19 @@ Unfortunately, there are no such apps available yet, as we are super early in de
 
 ### I'm a developer
 
-Great to hear that! You will need a server that runs this API. Currently, there are none publicly available.
-Therefore you need to clone this project and keep reading to learn how to run it on your local computer.
+Great to hear that! You will need a server that runs this API.
+
+This GitHub Repository's `master` branch is deployed on Google Cloud Run, reachable at
+[https://gcr.api.unfima.com](https://gcr.api.unfima.com/), which should be enough to get you started.
+Not that this provides NO guarantees regarding availability at all. Also all submitted data is handled by Google.
+If you care about availability or privacy, we strongly suggest hosting on your own.
+
+You can also use a Docker image:
+```bash
+docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:master
+```
+
+Or you could grab a `*.jar` file from the [releases](https://github.com/Nijin22/unnamed-finance-manager/releases). 
 
 ## Developing this application
 

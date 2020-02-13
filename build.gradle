@@ -27,6 +27,8 @@ dependencies {
 
   // Database
   implementation 'org.mariadb.jdbc:mariadb-java-client:2.5.3' // Main DB
+  implementation 'mysql:mysql-connector-java:8.0.19' // MySql - for Google Cloud
+  implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.0.15' // DB on Google Cloud
   implementation 'org.flywaydb:flyway-core:6.2.0' // Migrations
   testCompile 'com.h2database:h2:1.4.200' // Test-DB
 
