@@ -77,6 +77,8 @@ jobs:
       GCR_PROJECT_ID: aqueous-helper-268113
       GCR_SERVICE: unfima
     steps:
+      - name: Authenticate at GitHub releases
+        run: docker login -u nijin22 -p ${{secrets.GITHUB_TOKEN}} docker.pkg.github.com
       - name: Download image from GitHub
         run: docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:${GITHUB_REF##*/}
       - name: Tag for GCR
