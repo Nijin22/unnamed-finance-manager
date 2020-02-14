@@ -3,7 +3,7 @@ package info.dennis_weber.unfima.api.handlers.v1_0.accounts
 import com.google.inject.Inject
 import groovy.json.JsonException
 import groovy.json.JsonSlurper
-import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.BadRequestException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractAuthenticatedUnfimaHandler
 import info.dennis_weber.unfima.api.services.AccountDto
 import info.dennis_weber.unfima.api.services.CurrencyService
@@ -22,7 +22,7 @@ class CreateAccountHandler extends AbstractAuthenticatedUnfimaHandler {
     ctx.request.body.then({ body ->
       // Body missing?
       if (body.contentType.type == null) {
-        throw new BadFormatException("Request body is required but missing")
+        throw new BadRequestException("Request body is required but missing")
       }
 
       // Parsing body
@@ -42,14 +42,14 @@ class CreateAccountHandler extends AbstractAuthenticatedUnfimaHandler {
         ctx.render(json(accountId))
 
       } catch (GroovyCastException | JsonException ignored) {
-        throw new BadFormatException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
+        throw new BadRequestException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
       }
     })
   }
 
   private void checkIfCurrencyIdIsValid(AccountDto dto, int userId) {
     if (currencyService.getCurrency(dto.currencyId, userId) == null) {
-      throw new BadFormatException("CurrencyID '$dto.currencyId' does not exist or belong to user with ID '$userId'.")
+      throw new BadRequestException("CurrencyID '$dto.currencyId' does not exist or belong to user with ID '$userId'.")
     }
   }
 
@@ -57,7 +57,7 @@ class CreateAccountHandler extends AbstractAuthenticatedUnfimaHandler {
     final List requiredParameters = ["currencyId", "accountName", "belongsToUser", "notes"]
     requiredParameters.each {
       if (dto.getProperty(it) == null) {
-        throw new BadFormatException("Required parameter '$it' is missing.", "REQUIRE_PARAMETER_MISSING")
+        throw new BadRequestException("Required parameter '$it' is missing.", "REQUIRE_PARAMETER_MISSING")
       }
     }
   }

@@ -5,7 +5,7 @@ import groovy.json.JsonException
 import groovy.json.JsonSlurper
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
-import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.BadRequestException
 import info.dennis_weber.unfima.api.errors.ConflictException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractUnfimaHandler
 import info.dennis_weber.unfima.api.services.CurrencyDto
@@ -33,7 +33,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
     ctx.request.body.then({ body ->
       // Body missing?
       if (body.contentType.type == null || body.text == null || body.text.empty) {
-        throw new BadFormatException("Request body is required but missing")
+        throw new BadRequestException("Request body is required but missing")
       }
 
       // Parse body
@@ -42,26 +42,26 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
 
         // verify email is set and valid
         if (dto.email == null) {
-          throw new BadFormatException("required parameter 'email' is missing")
+          throw new BadRequestException("required parameter 'email' is missing")
         }
         if (dto.email.length() > MAX_EMAIL_LENGTH) {
-          throw new BadFormatException("'email' parameter is too long.")
+          throw new BadRequestException("'email' parameter is too long.")
         }
 
         // Verify PW is set and valid
         if (dto.password == null) {
-          throw new BadFormatException("required parameter 'password' is missing")
+          throw new BadRequestException("required parameter 'password' is missing")
         }
         if (dto.password.length() > MAX_PASSWORD_LENGTH) {
-          throw new BadFormatException("'password' parameter is too long")
+          throw new BadRequestException("'password' parameter is too long")
         }
 
         // Verify all required currency values are set
-        if (dto.starterCurrency == null) throw new BadFormatException("required parameter 'starterCurrency' is missing")
+        if (dto.starterCurrency == null) throw new BadRequestException("required parameter 'starterCurrency' is missing")
         List requiredValues = ["shortName", "fullName", "fractionalName", "decimalPlaces"]
         requiredValues.each {
           if (dto.starterCurrency.getProperty(it) == null) {
-            throw new BadFormatException("required parameter '$it' of 'starterCurrency' is missing.")
+            throw new BadRequestException("required parameter '$it' of 'starterCurrency' is missing.")
           }
         }
 
@@ -114,7 +114,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
         ctx.response.send() // No content
 
       } catch (GroovyCastException | JsonException ignored) {
-        throw new BadFormatException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
+        throw new BadRequestException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
       }
     })
   }

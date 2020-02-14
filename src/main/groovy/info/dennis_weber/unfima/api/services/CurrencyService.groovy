@@ -3,7 +3,7 @@ package info.dennis_weber.unfima.api.services
 import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
-import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.BadRequestException
 import info.dennis_weber.unfima.api.helpers.AbstractDto
 
 class CurrencyService {
@@ -144,7 +144,7 @@ final class CurrencyDto extends AbstractDto {
 
   void setDecimalPlaces(Integer decimalPlaces) {
     if (decimalPlaces != null && decimalPlaces > 15) {
-      throw new BadFormatException("Supported maximum for 'decimalPlaces' is 15. You specified '$decimalPlaces'")
+      throw new BadRequestException("Supported maximum for 'decimalPlaces' is 15. You specified '$decimalPlaces'")
     }
     this.decimalPlaces = decimalPlaces
   }

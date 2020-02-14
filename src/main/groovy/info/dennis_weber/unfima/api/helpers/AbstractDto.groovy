@@ -1,6 +1,6 @@
 package info.dennis_weber.unfima.api.helpers
 
-import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.BadRequestException
 
 class AbstractDto {
 
@@ -37,7 +37,7 @@ class AbstractDto {
    */
   protected static String doAttributeLengthCheck(String attributeName, String attributeValue, int maxLength) {
     if (attributeValue != null && attributeValue.length() > maxLength) {
-      throw new BadFormatException(
+      throw new BadRequestException(
           "Supported maximum length for '$attributeName' is $maxLength " +
           "but the provided value is ${attributeValue.length()} charcters long. " +
           "The value you provided is '$attributeValue'",
