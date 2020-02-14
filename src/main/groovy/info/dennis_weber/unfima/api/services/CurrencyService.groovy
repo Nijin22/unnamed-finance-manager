@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import info.dennis_weber.unfima.api.errors.BadFormatException
-import info.dennis_weber.unfima.api.helpers.MappableTrait
+import info.dennis_weber.unfima.api.helpers.AbstractDto
 
 class CurrencyService {
   @Inject
@@ -117,7 +117,7 @@ class CurrencyService {
   }
 }
 
-final class CurrencyDto implements MappableTrait {
+final class CurrencyDto extends AbstractDto {
   Integer id
   String shortName
   String fullName
@@ -131,27 +131,15 @@ final class CurrencyDto implements MappableTrait {
   //////////////////////
 
   void setShortName(String shortName) {
-    if (shortName != null && shortName.length() > 255) {
-      throw new BadFormatException("Supported maximum length for 'shortName' is 255. " +
-          "The requested shortName '$shortName' is ${shortName.length()} charcters long.")
-    }
-    this.shortName = shortName
+    this.shortName = doAttributeLengthCheck("shortName", shortName, 255)
   }
 
   void setFullName(String fullName) {
-    if (fullName != null && fullName.length() > 255) {
-      throw new BadFormatException("Supported maximum length for 'fullName' is 255. " +
-          "The requested fullName '$fullName' is ${fullName.length()} charcters long.")
-    }
-    this.fullName = fullName
+    this.fullName = doAttributeLengthCheck("fullName", fullName, 255)
   }
 
   void setFractionalName(String fractionalName) {
-    if (fractionalName != null && fractionalName.length() > 255) {
-      throw new BadFormatException("Supported maximum length for 'fractionalName' is 255. " +
-          "The requested fractionalName '$fractionalName' is ${fractionalName.length()} charcters long.")
-    }
-    this.fractionalName = fractionalName
+    this.fractionalName = doAttributeLengthCheck("fractionalName", fractionalName, 255)
   }
 
   void setDecimalPlaces(Integer decimalPlaces) {
