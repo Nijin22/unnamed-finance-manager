@@ -166,4 +166,17 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     then:
     authenticatedClient.response.statusCode == 400
   }
+
+  def "Updating a currency but missing the body"() {
+    given:
+    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+
+    when:
+    authenticatedClient.put("/v1.0/currencies/" + id)
+    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+
+    then:
+    authenticatedClient.response.statusCode == 400
+    answer.errorMsg == "Request body is required but missing"
+  }
 }
