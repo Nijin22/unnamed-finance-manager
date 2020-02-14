@@ -7,11 +7,7 @@ import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTe
 class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
   def "Getting details for a currency"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
-
-    Map testData = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency // NOW it is available!
+    Map testData = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + testData.id)
@@ -42,9 +38,6 @@ class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Getting details for a currency that belongs to another user"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     int otherUsersCurrencyId = UnfimaServerBackedApplicationUnderTest.TEST_DATA.otherUserCurrency.id
 
     when:
