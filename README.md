@@ -1,5 +1,5 @@
 # REST-API for Unfima - the personal finance manager
-![Run tests with Gradle](https://github.com/Nijin22/unnamed-finance-manager/workflows/Run%20tests%20with%20Gradle/badge.svg)
+![Main](https://github.com/Nijin22/unnamed-finance-manager/workflows/Main/badge.svg)
 [![codecov](https://codecov.io/gh/Nijin22/unnamed-finance-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/Nijin22/unnamed-finance-manager)
 
 Unfima is a self-hosted personal finance manager. I.e. the tool to choose if you want to get an overview over your
@@ -7,7 +7,7 @@ income, expenses and open bills. It supports you making smart and future-proof f
 
 > **NOTE: Early in development**
 >
-> This project is still super early into devlopment and currently suited for end users. If you're interested in
+> This project is still super early in development and currently **not** suited for end users. If you're interested in
 > contributing just open a [GitHub issue](https://github.com/Nijin22/unnamed-finance-manager/issues) and let me know
 > about your idea. I'll be sure to help you get anything working! :)
 
@@ -73,7 +73,7 @@ Once your application is running, you can visit http://localhost:5050 to access 
 documentation will be served.
 
 ### Run tests
-Either by running them through your IDE (IntelliJ: Use the `All Tests` run config"), or by running them via gradle.
+Either by running them through your IDE (IntelliJ: Use the `All Tests` run config), or by running them via gradle.
 
 ```bash
 # Set your JAVA_HOME to a JRE 1.8
