@@ -3,6 +3,7 @@ package info.dennis_weber.unfima.api.handlers.v1_0
 import info.dennis_weber.unfima.api.errors.BadRequestException
 import info.dennis_weber.unfima.api.helpers.AbstractDto
 import ratpack.groovy.handling.GroovyHandler
+import ratpack.http.TypedData
 
 abstract class AbstractUnfimaHandler extends GroovyHandler {
 
@@ -19,6 +20,17 @@ abstract class AbstractUnfimaHandler extends GroovyHandler {
       if (dto.getProperty(it) == null) {
         throw new BadRequestException("Required parameter '$it' is missing.", "REQUIRE_PARAMETER_MISSING")
       }
+    }
+  }
+
+  /**
+   * Ensures the given body is present and valid, or throws a BadRequestException otherwise.
+   *
+   * @param body
+   */
+  protected static void checkBodyIsPresent(TypedData body){
+    if (body.contentType.type == null || body.text == null || body.text.empty) {
+      throw new BadRequestException("Request body is required but missing")
     }
   }
 }
