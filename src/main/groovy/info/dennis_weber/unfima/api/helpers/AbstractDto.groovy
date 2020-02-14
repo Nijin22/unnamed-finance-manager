@@ -38,9 +38,9 @@ class AbstractDto {
   protected static String doAttributeLengthCheck(String attributeName, String attributeValue, int maxLength) {
     if (attributeValue != null && attributeValue.length() > maxLength) {
       throw new BadRequestException(
-          "Supported maximum length for '$attributeName' is $maxLength " +
-          "but the provided value is ${attributeValue.length()} charcters long. " +
-          "The value you provided is '$attributeValue'",
+          "Supported maximum length for '$attributeName' is $maxLength, " +
+              "but the provided value is ${attributeValue.length()} characters long. " +
+              "The value you provided is '$attributeValue'",
           "ATTRIBUTE_TOO_LONG")
     } else {
       return attributeValue

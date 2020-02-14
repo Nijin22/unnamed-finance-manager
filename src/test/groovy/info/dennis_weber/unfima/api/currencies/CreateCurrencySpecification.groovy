@@ -21,7 +21,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 201
@@ -52,7 +52,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
   def "Creating a new currency without a body"() {
     when:
     authenticatedClient.post("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -76,7 +76,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -95,7 +95,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -118,7 +118,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400

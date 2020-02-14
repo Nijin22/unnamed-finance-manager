@@ -1,6 +1,7 @@
 package info.dennis_weber.unfima.api.users
 
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
 import info.dennis_weber.unfima.api.services.CurrencyDto
@@ -181,4 +182,14 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     resp.statusCode == 400
   }
 
+  def "Registering a new account, but forgetting the request body"() {
+
+    when:
+    ReceivedResponse resp = client.post("v1.0/users")
+    def answer = getResponseObject(client)
+
+    then:
+    resp.statusCode == 400
+    answer.errorMsg == "Request body is required but missing"
+  }
 }

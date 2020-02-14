@@ -128,11 +128,11 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
         it.text(json)
       })
     })
-    ReceivedResponse resp = client.post("v1.0/authenticate")
-    def answer = new JsonSlurper().parseText(resp.body.text)
+    client.post("v1.0/authenticate")
+    def answer = getResponseObject(client)
 
     then:
-    resp.statusCode == 401
+    client.response.statusCode == 401
     answer.errorMsg == "Email address '$email' not found"
     answer.errorId == "USERNAME_UNKNOWN"
   }
@@ -151,11 +151,11 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
         it.text(json)
       })
     })
-    ReceivedResponse resp = client.post("v1.0/authenticate")
-    def answer = new JsonSlurper().parseText(resp.body.text)
+    client.post("v1.0/authenticate")
+    def answer = getResponseObject(client)
 
     then:
-    resp.statusCode == 401
+    client.response.statusCode == 401
     answer.errorMsg == "Password doesn't match email '$email'"
     answer.errorId == "PASSWORD_DOES_NOT_MATCH"
   }

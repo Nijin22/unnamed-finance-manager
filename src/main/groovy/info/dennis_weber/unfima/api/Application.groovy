@@ -117,6 +117,7 @@ class Application {
             }
           })
 
+          // Accounts
           prefix("v1.0/accounts", { c ->
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
@@ -125,7 +126,9 @@ class Application {
             }
           })
 
-          get("v1.0/err", { throw new RuntimeException("woops.") })
+          get("v1.0/runtimeExceptionSimulation", {
+            throw new RuntimeException("This is a simulated runtime exception. Nothing actually broke.")
+          })
         }
       }
     }

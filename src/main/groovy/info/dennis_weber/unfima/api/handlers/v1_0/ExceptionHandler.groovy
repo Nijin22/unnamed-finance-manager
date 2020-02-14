@@ -35,8 +35,15 @@ class ExceptionHandler implements ServerErrorHandler {
     ctx.response.status(500)
     ctx.response.contentType("application/json")
     Map response = [
-        "errorClass"  : e.class,
-        "errorMessage": e.message,
+        "info"      : "A unexpected error occurred. Ideally, this should never happen. " +
+            "If you'd like to help us fix this, please report this error and the steps you did to: " +
+            "https://github.com/Nijin22/unnamed-finance-manager/issues",
+        "errorClass": e.class,
+        "errorMsg"  : e.message,
+        "url"       : ctx.request.uri,
+        "stackTrace": [e.stackTrace.collect({ element ->
+          return element.toString()
+        })]
     ]
     ctx.render(json(response))
   }

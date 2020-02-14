@@ -11,7 +11,7 @@ class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + testData.id)
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     answer.id == testData.id
@@ -28,7 +28,7 @@ class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + nonExistingCurrencyId)
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 404
@@ -42,7 +42,7 @@ class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + otherUsersCurrencyId)
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 404

@@ -11,7 +11,7 @@ class BasicUserDetailsSpecification extends AbstractUnfimaSpecification {
   def "Getting basic user details for a valid user"() {
     when:
     authenticatedClient.get("/v1.0/users/me")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 200
@@ -22,7 +22,7 @@ class BasicUserDetailsSpecification extends AbstractUnfimaSpecification {
   def "Getting basic user details without a token"() {
     when:
     client.get("/v1.0/users/me")
-    def answer = new JsonSlurper().parseText(client.response.body.text)
+    def answer = getResponseObject(client)
 
     then:
     client.response.statusCode == 401
@@ -41,7 +41,7 @@ class BasicUserDetailsSpecification extends AbstractUnfimaSpecification {
       })
     })
     client.get("/v1.0/users/me")
-    def answer = new JsonSlurper().parseText(client.response.body.text)
+    def answer = getResponseObject(client)
 
     then:
     client.response.statusCode == 401
@@ -60,7 +60,7 @@ class BasicUserDetailsSpecification extends AbstractUnfimaSpecification {
       })
     })
     client.get("/v1.0/users/me")
-    def answer = new JsonSlurper().parseText(client.response.body.text)
+    def answer = getResponseObject(client)
 
     then:
     client.response.statusCode == 401
