@@ -22,7 +22,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/accounts")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 201
@@ -46,7 +46,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/accounts")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -69,7 +69,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/accounts")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -80,7 +80,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
   def "Creating a new account without a request Body"() {
     when:
     authenticatedClient.post("/v1.0/accounts")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
@@ -107,7 +107,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
       })
     })
     authenticatedClient.post("/v1.0/accounts")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400

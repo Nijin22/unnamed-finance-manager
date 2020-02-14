@@ -186,7 +186,7 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
 
     when:
     ReceivedResponse resp = client.post("v1.0/users")
-    def answer = new JsonSlurper().parseText(client.response.body.text)
+    def answer = getResponseObject(client)
 
     then:
     resp.statusCode == 400

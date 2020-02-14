@@ -7,7 +7,7 @@ class GetAllCurrenciesSpecification extends AbstractUnfimaSpecification {
   def "Getting details for all currencies"() {
     when:
     authenticatedClient.get("/v1.0/currencies")
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     answer instanceof List

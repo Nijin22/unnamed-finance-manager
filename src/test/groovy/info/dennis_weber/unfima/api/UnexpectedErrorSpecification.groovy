@@ -10,7 +10,7 @@ class UnexpectedErrorSpecification extends AbstractUnfimaSpecification {
 
     when:
     client.get("v1.0/runtimeExceptionSimulation")
-    def answer = new JsonSlurper().parseText(client.response.body.text)
+    def answer = getResponseObject(client)
 
     then:
     client.response.statusCode == 500

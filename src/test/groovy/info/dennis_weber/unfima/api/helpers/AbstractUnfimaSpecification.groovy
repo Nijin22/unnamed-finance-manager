@@ -1,5 +1,6 @@
 package info.dennis_weber.unfima.api.helpers
 
+import groovy.json.JsonSlurper
 import ratpack.test.ApplicationUnderTest
 import ratpack.test.http.TestHttpClient
 import spock.lang.Specification
@@ -7,6 +8,8 @@ import spock.lang.Specification
 abstract class AbstractUnfimaSpecification extends Specification {
   TestHttpClient client
   TestHttpClient authenticatedClient
+
+  final private JsonSlurper slurper = new JsonSlurper()
 
   def setup() {
     // Start the application with a test environment
@@ -26,5 +29,9 @@ abstract class AbstractUnfimaSpecification extends Specification {
     // Some of this data (database-generated IDs) is only available after a initial HTTP call has been sent.
     // So we do this initial call here:
     client.get() // the initial call to the root page
+  }
+
+  def getResponseObject(TestHttpClient client) {
+    return slurper.parseText(client.response.body.text)
   }
 }

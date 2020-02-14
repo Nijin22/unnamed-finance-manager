@@ -7,6 +7,7 @@
       <w>guice</w>
       <w>jdbc</w>
       <w>ratpack</w>
+      <w>slurper</w>
       <w>unfima</w>
     </words>
   </dictionary>

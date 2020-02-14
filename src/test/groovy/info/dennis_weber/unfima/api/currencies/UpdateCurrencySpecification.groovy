@@ -173,7 +173,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
     when:
     authenticatedClient.put("/v1.0/currencies/" + id)
-    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+    def answer = getResponseObject(authenticatedClient)
 
     then:
     authenticatedClient.response.statusCode == 400
