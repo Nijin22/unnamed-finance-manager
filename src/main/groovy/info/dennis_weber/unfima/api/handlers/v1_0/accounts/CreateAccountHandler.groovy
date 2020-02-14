@@ -28,7 +28,7 @@ class CreateAccountHandler extends AbstractAuthenticatedUnfimaHandler {
       // Parsing body
       try {
         AccountDto dto = new JsonSlurper().parseText(body.text) as AccountDto
-        checkIfAllRequiredParametersAreFilled(dto)
+        checkRequiredAttributesArePresent(dto, ["currencyId", "accountName", "belongsToUser", "notes"])
         checkIfCurrencyIdIsValid(dto, userId)
 
         // creating account
@@ -53,12 +53,4 @@ class CreateAccountHandler extends AbstractAuthenticatedUnfimaHandler {
     }
   }
 
-  private static void checkIfAllRequiredParametersAreFilled(AccountDto dto) {
-    final List requiredParameters = ["currencyId", "accountName", "belongsToUser", "notes"]
-    requiredParameters.each {
-      if (dto.getProperty(it) == null) {
-        throw new BadRequestException("Required parameter '$it' is missing.", "REQUIRE_PARAMETER_MISSING")
-      }
-    }
-  }
 }

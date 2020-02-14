@@ -28,6 +28,7 @@ class CreateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
       // Parsing body
       try {
         CurrencyDto dto = new JsonSlurper().parseText(body.text) as CurrencyDto
+        checkRequiredAttributesArePresent(dto, ["shortName", "fullName", "fractionalName", "decimalPlaces", "starterRelativeValue"])
 
         // creating currency
         int currencyId = currencyService.createCurrency(dto, userId)
