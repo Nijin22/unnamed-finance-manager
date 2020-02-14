@@ -3,7 +3,7 @@ package info.dennis_weber.unfima.api.handlers.v1_0.currencies
 import com.google.inject.Inject
 import groovy.json.JsonException
 import groovy.json.JsonSlurper
-import info.dennis_weber.unfima.api.errors.BadFormatException
+import info.dennis_weber.unfima.api.errors.BadRequestException
 import info.dennis_weber.unfima.api.errors.NotFoundException
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractAuthenticatedUnfimaHandler
 import info.dennis_weber.unfima.api.services.CurrencyDto
@@ -27,7 +27,7 @@ class UpdateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
     ctx.request.body.then({ body ->
       // Body missing?
       if (body.contentType.type == null) {
-        throw new BadFormatException("Request body is required but missing")
+        throw new BadRequestException("Request body is required but missing")
       }
 
       // Parsing body
@@ -35,7 +35,7 @@ class UpdateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
         CurrencyDto dto = new JsonSlurper().parseText(body.text) as CurrencyDto
 
         if (dto.id != null && dto.id != existingCurrency.id) {
-          throw new BadFormatException("You requested to change the currency's ID from '$existingCurrency.id' to '$dto.id', but changing IDs is not possible.")
+          throw new BadRequestException("You requested to change the currency's ID from '$existingCurrency.id' to '$dto.id', but changing IDs is not possible.")
         }
 
         // Update currency
@@ -43,7 +43,7 @@ class UpdateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
         ctx.response.status(204)
         ctx.response.send() // Send empty
       } catch (GroovyCastException | JsonException ignored) {
-        throw new BadFormatException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
+        throw new BadRequestException("Request body is not using the correct schema. Your request body was >>>$body.text<<<")
       }
     })
   }

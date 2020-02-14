@@ -101,4 +101,28 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
     authenticatedClient.response.statusCode == 400
     answer.errorMsg.contains("Request body is not using the correct schema.")
   }
+
+  def "Creating a new currency with missing attributes"() {
+    given:
+    Map request = ["shortName"           : "€",
+                   // Note that 'fullName' is missing
+                   "fractionalName"      : "Cent",
+                   "decimalPlaces"       : 2,
+                   "starterRelativeValue": 1]
+
+    when:
+    authenticatedClient.requestSpec({
+      it.body({
+        it.type("application/json")
+        it.text(JsonOutput.toJson(request))
+      })
+    })
+    authenticatedClient.post("/v1.0/currencies")
+    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+
+    then:
+    authenticatedClient.response.statusCode == 400
+    answer.errorMsg == "Required parameter 'fullName' is missing."
+    answer.errorId == "REQUIRE_PARAMETER_MISSING"
+  }
 }

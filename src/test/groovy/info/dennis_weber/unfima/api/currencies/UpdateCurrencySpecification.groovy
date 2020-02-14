@@ -8,9 +8,6 @@ import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTe
 class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
   def "Updating the shortName of a currency"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     String newShortName = "NewShortName"
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     String json = JsonOutput.toJson(["shortName": newShortName])
@@ -37,9 +34,6 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating all attributes of a currency"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     String newShortName = "XBT"
     String newFullName = "Bitcoin"
     String newFractionalName = "Satoshi"
@@ -77,9 +71,6 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating NO attributes of a currency (but still calling the end point)"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     String json = JsonOutput.toJson([])
 
@@ -110,9 +101,6 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating the ID of a currency"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     int desiredNewId = 987
     String json = JsonOutput.toJson(["id": desiredNewId])
@@ -163,9 +151,6 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating a currency with a broken request body"() {
     given:
-    // We need to do SOME call first before the call to the tested endpoint, as this first call will initialize the
-    // application and the 'testData.id' variable is only known after initialization.
-    authenticatedClient.get() // the initialization call
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     String json = "this isn't actually json"
 

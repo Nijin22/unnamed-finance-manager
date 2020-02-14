@@ -87,6 +87,38 @@ components:
           properties:
             currentRelativeValue:
               $ref: '#/components/schemas/CurrencyRelativeValue'
+    AccountId:
+      type: integer
+      description: "Unique identifier for a account"
+      example: 1
+    AccountBase:
+      type: object
+      properties:
+        currencyId:
+          $ref: '#/components/schemas/CurrencyId'
+        accountName:
+          type: string
+          description: "User-chosen account name"
+          example: "XYZ Bank - Savings account"
+          maxLength: 255
+        belongsToUser:
+          type: boolean
+          description: >
+            Unfima users can create accounts they own and accounts of third
+            parties, like the supermarket they shop at. If the balance of this
+            account should be included in the users wealth, this should be set
+            to 'true'.
+          example: true
+        notes:
+          type: string
+          description: >
+            User-chosen additional infos about this account.
+            Can also be an empty string.
+            Some applications might render
+          example: >
+            **IBAN**: DE75512108001245126199,
+            **Support phone number**: +49 1234 5678900
+          maxLength: 16777215
 security:
   - bearerAuth: []
 paths:
@@ -315,3 +347,34 @@ paths:
           $ref: '#/components/responses/BadAuthentication'
         "404":
           $ref: '#/components/responses/NotFound'
+  /v1.0/accounts:
+    post:
+      summary: Create a new account
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AccountBase'
+                - type: object
+                  required:
+                    - currencyId
+                    - accountName
+                    - belongsToUser
+                    - notes
+      responses:
+        "201":
+          description: "Account successfully created"
+          content:
+            application/json:
+              schema:
+                description: The ID of the newly created currency
+                type: integer
+                example: 1
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
