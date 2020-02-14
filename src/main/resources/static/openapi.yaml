@@ -114,11 +114,53 @@ components:
           description: >
             User-chosen additional infos about this account.
             Can also be an empty string.
-            Some applications might render
+            Some applications might render the content as markdown.
           example: >
             **IBAN**: DE75512108001245126199,
             **Support phone number**: +49 1234 5678900
           maxLength: 16777215
+    TransactionId:
+      type: integer
+      description: "Unique identifier for a transaction"
+    TransactionBase:
+      type: object
+      properties:
+        transactionName:
+          type: string
+          description: "User-provided text to describe the transaction"
+          maxLength: 255
+          example: "Buying groceries"
+        timestamp:
+          type: integer
+          description: "The unix timestamp (in seconds) when this transaction happened"
+          maximum: 9223372036854775807
+        notes:
+          type: string
+          description: >
+            User-provided additional text about this transaction.
+            Might be an empty string.
+            Some applications might render the content as markdown.
+          maxLength: 16777215
+          example: >
+            * Apples\n
+            * Toilet paper\n
+            * Cookies (Do **NOT** eat. For Jane's birthday!)\n
+    BalanceChangeId:
+      type: integer
+      description: "Unique identifier for a balance change"
+    BalanceChangeBase:
+      type: object
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        value:
+          type: number
+          description: >
+            The value of the balance change.
+            The currency of this value is determined by the currency of the
+            linked account (by `accountId`).
+          example: "3.14"
+
 security:
   - bearerAuth: []
 paths:
@@ -349,7 +391,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1.0/accounts:
     post:
-      summary: Create a new account
+      summary: Create new account
       tags:
         - Accounts
       requestBody:
@@ -374,6 +416,56 @@ paths:
                 description: The ID of the newly created currency
                 type: integer
                 example: 1
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+  /v1.0/transactions:
+    post:
+      summary: Create new transaction
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/TransactionBase'
+                - type: object
+                  properties:
+                    balanceChanges:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/BalanceChangeBase'
+                      description: >
+                        List of all balance changes in this transaction.
+                        For each used currency, the sum of all `value`s in this
+                        list must equal 0.
+                  required:
+                    - transactionName
+                    - timestamp
+                    - notes
+                    - balanceChanges
+              example:
+                transactionName: "Buying groceries"
+                timestamp: 1581711070
+                notes: ""
+                balanceChanges:
+                  - accountId: 123
+                    value: 13.37
+                  - accountId: 456
+                    value: -10
+                  - accountId: 789
+                    value: -3.37
+      responses:
+        "201":
+          description: "Transaction successfully created"
+          content:
+            application/json:
+              schema:
+                description: The ID of the newly created transaction
+                type: integer
         "400":
           $ref: '#/components/responses/BadFormat'
         "401":
