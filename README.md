@@ -42,7 +42,7 @@ Therefore we suggest using this IDE and simply importing the entire repository.
 
 ### Prerequisites
 * A Java 1.8 JDK
-* A [MariaDB](https://mariadb.org/) database, user and password.
+* A [MariaDB](https://mariadb.org/) database (or MySql), user and password.
   In the next examples we assume they are both named "unfima"
 
 ### Run locally
@@ -60,7 +60,7 @@ export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 
 # Set the database connection
 # The example assumes a locally running MariaDb with a database called "unfima"
-export UNFIMA_DATABASE_JDBC_URL="jdbc:mariadb://localhost:3306/unfima"
+export UNFIMA_DATABASE_JDBC_URL="jdbc:mysql://localhost:3306/unfima"
 export UNFIMA_DATABASE_USERNAME="unfima"
 export UNFIMA_DATABASE_PASSWORD="<your_super_secret_password_here>"
 # export UNFIMA_DATABASE_CLEAN_ON_START="true"

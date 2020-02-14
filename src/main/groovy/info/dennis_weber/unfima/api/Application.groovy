@@ -30,7 +30,7 @@ class Application {
   /**
    * Creates a new instance of the Unfima application which can then be started by calling {@link #startServer()}.
    *
-   * @param databaseJdbcUrl database connection url. e.g. "jdbc:mariadb://localhost:3306/unfima"
+   * @param databaseJdbcUrl database connection url. e.g. "jdbc:mysql://localhost:3306/unfima"
    * @param databaseUsername database username
    * @param databasePassword database password
    */
