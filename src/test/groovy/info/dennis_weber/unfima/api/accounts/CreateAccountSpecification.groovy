@@ -87,4 +87,31 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     answer.errorMsg == "Request body is required but missing"
   }
 
+  def "Creating a new account but using a way to long accountName"() {
+    given:
+    String tooLongAccountName = "This account name is way, way, way, way, way, way, way, way, way, way, way, way, way," +
+        "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
+        "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
+        "too long."
+    Map request = ["currencyId"   : UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id,
+                   "accountName"  : tooLongAccountName,
+                   "belongsToUser": true,
+                   "notes"        : "",
+    ]
+
+    when:
+    authenticatedClient.requestSpec({
+      it.body({
+        it.type("application/json")
+        it.text(JsonOutput.toJson(request))
+      })
+    })
+    authenticatedClient.post("/v1.0/accounts")
+    def answer = new JsonSlurper().parseText(authenticatedClient.response.body.text)
+
+    then:
+    authenticatedClient.response.statusCode == 400
+    answer.errorMsg.contains("Supported maximum length for 'accountName' is 255, but the provided value is ${tooLongAccountName.length()} characters long.")
+    answer.errorId == "ATTRIBUTE_TOO_LONG"
+  }
 }
