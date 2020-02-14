@@ -37,7 +37,7 @@ class CurrencyService {
   }
 
   /**
-   * Retrieves a currency from the database
+   * Retrieves a currency from the database.
    * A currency is only returned if the ID is correct AND the currency belongs to the provided user.
    *
    * @param currencyId identifier to find currency
