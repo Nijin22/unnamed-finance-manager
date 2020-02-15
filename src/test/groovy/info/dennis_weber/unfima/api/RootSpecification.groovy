@@ -4,11 +4,11 @@ import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 
 class RootSpecification extends AbstractUnfimaSpecification {
 
-    def "Reaching the root site"() {
-        when:
-        client.get("/")
+  def "Reaching the root site"() {
+    when:
+    client.get("/")
 
-        then:
-        client.response.status.code == 200
-    }
+    then:
+    client.response.status.code == 200
+  }
 }

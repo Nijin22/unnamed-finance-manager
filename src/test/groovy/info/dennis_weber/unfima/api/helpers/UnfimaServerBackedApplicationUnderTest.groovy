@@ -51,7 +51,7 @@ class UnfimaServerBackedApplicationUnderTest extends ServerBackedApplicationUnde
               "belongsToUser": true,
               "notes"        : ""
           ],
-          "anotherOwnAccount"       : [
+          "anotherOwnAccount": [
               "id"           : 999, // will be replaced at runtime by fillWithTestData()
               "currencyId"   : 999, // will be replaced at runtime by fillWithTestData()
               "accountName"  : "Cash - Wallet",

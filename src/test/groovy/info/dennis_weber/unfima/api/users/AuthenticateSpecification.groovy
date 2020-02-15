@@ -1,6 +1,5 @@
 package info.dennis_weber.unfima.api.users
 
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest

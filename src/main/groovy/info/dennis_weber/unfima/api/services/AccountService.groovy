@@ -29,7 +29,7 @@ class AccountService {
           AND acc.accountId = ?
         """.stripIndent()
     GroovyRowResult row = dbService.groovySql.firstRow(selectStmt, [userId, accountId])
-    if (row == null){
+    if (row == null) {
       return null
     }
 

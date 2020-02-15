@@ -28,7 +28,7 @@ abstract class AbstractUnfimaHandler extends GroovyHandler {
    *
    * @param body
    */
-  protected static void checkBodyIsPresent(TypedData body){
+  protected static void checkBodyIsPresent(TypedData body) {
     if (body.contentType.type == null || body.text == null || body.text.empty) {
       throw new BadRequestException("Request body is required but missing")
     }

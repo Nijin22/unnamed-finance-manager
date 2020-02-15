@@ -22,7 +22,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     answer.class == Integer
   }
 
-  def "Creating a new account with a bad currency ID"(){
+  def "Creating a new account with a bad currency ID"() {
     given:
     int invalidCurrencyId = 999
     Map request = ["currencyId"   : invalidCurrencyId,
