@@ -13,15 +13,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
     String password = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.password
     String clientIdentifier = "Spock Testrunner"
+    Map request = ["email": email, "password": password, "client": clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "client": clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/authenticate")
     String token = new JsonSlurper().parseText(resp.body.text).get("bearerToken")
 
@@ -34,15 +29,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     given:
     String password = "doesNotMatter"
     String clientIdentifier = "Spock Testrunner"
+    Map request = ["password": password, client: clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["password": password, client: clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/authenticate")
 
     then:
@@ -54,15 +44,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     given:
     String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
     String clientIdentifier = "Spock Testrunner"
+    Map request = ["email": email, client: clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["email": email, client: clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/authenticate")
 
     then:
@@ -74,15 +59,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     given:
     String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
     String password = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.password
+    Map request = ["email": email, "password": password]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/authenticate")
 
     then:
@@ -98,15 +78,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
         "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
         "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
         "too long."
+    Map request = ["email": email, "password": password, "client": clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "client": clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/authenticate")
 
     then:
@@ -119,15 +94,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     String email = "does.not.have@an.account"
     String password = "doesNotMatter"
     String clientIdentifier = "Spock Testrunner"
+    Map request = ["email": email, "password": password, "client": clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "client": clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     client.post("v1.0/authenticate")
     def answer = getResponseObject(client)
 
@@ -142,15 +112,10 @@ class AuthenticateSpecification extends AbstractUnfimaSpecification {
     String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
     String password = "theWrongOne"
     String clientIdentifier = "Spock Testrunner"
+    Map request = ["email": email, "password": password, "client": clientIdentifier]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "client": clientIdentifier])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     client.post("v1.0/authenticate")
     def answer = getResponseObject(client)
 

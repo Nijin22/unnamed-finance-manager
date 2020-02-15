@@ -1,7 +1,5 @@
 package info.dennis_weber.unfima.api.currencies
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 
 class CreateCurrencySpecification extends AbstractUnfimaSpecification {
@@ -14,12 +12,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
                    "starterRelativeValue": 1]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/currencies")
     def answer = getResponseObject(authenticatedClient)
 
@@ -37,12 +30,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
                    "starterRelativeValue": 1]
 
     when:
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(client, request)
     client.post("/v1.0/currencies")
 
     then:
@@ -69,12 +57,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
                    "IAmUseless"          : "xyz"]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/currencies")
     def answer = getResponseObject(authenticatedClient)
 
@@ -111,12 +94,7 @@ class CreateCurrencySpecification extends AbstractUnfimaSpecification {
                    "starterRelativeValue": 1]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/currencies")
     def answer = getResponseObject(authenticatedClient)
 

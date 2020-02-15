@@ -1,7 +1,5 @@
 package info.dennis_weber.unfima.api.users
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
 import info.dennis_weber.unfima.api.services.CurrencyDto
@@ -17,15 +15,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     starterCurrency.fullName = "Euro"
     starterCurrency.fractionalName = "Cent"
     starterCurrency.decimalPlaces = 2
+    Map request = ["email": email, "password": password, "starterCurrency": starterCurrency]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "starterCurrency": starterCurrency])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -41,15 +34,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     starterCurrency.fullName = "doesNotMatter"
     starterCurrency.fractionalName = "doesNotMatter"
     starterCurrency.decimalPlaces = 2
+    Map request = ["email": email, "password": password, "starterCurrency": starterCurrency]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "starterCurrency": starterCurrency])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -60,15 +48,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
   def "Registering without email"() {
     given:
     String password = "doesNotMatter"
+    Map request = ["password": password]
 
     when:
-    String json = JsonOutput.toJson(["password": password])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -83,15 +66,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
         ".way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way.way" +
         ".way.way.way.way.way.way.way.way.way.way.way.way@to.long.email.address"
     String password = "doesNotMatter"
+    Map request = ["email": email, "password": password]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -102,15 +80,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
   def "Registering without password"() {
     given:
     String email = "a.new.user@to.add"
+    Map request = ["email": email]
 
     when:
-    String json = JsonOutput.toJson(["email" : email])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -124,15 +97,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     String password = "this is way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way," +
         " way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way," +
         " too long, even for a reasonable secure password, as it would allow DOS by taking too much CPU time to bcrypt!"
+    Map request = ["email": email, "password": password]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -144,15 +112,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     given:
     String email = "a.new.user@to.add"
     String password = "password-in-tests"
+    Map request = ["email": email, "password": password]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -167,15 +130,10 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
     starterCurrency.fullName = "doesNotMatter"
     starterCurrency.fractionalName = "doesNotMatter"
     starterCurrency.decimalPlaces = 2
+    Map request = ["email": email, "password": password, "starterCurrency": starterCurrency]
 
     when:
-    String json = JsonOutput.toJson(["email": email, "password": password, "starterCurrency": starterCurrency])
-    client.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(client, request)
     ReceivedResponse resp = client.post("v1.0/users")
 
     then:
@@ -183,7 +141,6 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
   }
 
   def "Registering a new account, but forgetting the request body"() {
-
     when:
     ReceivedResponse resp = client.post("v1.0/users")
     def answer = getResponseObject(client)

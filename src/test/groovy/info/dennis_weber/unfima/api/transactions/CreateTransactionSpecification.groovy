@@ -1,6 +1,5 @@
 package info.dennis_weber.unfima.api.transactions
 
-import groovy.json.JsonOutput
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
 import info.dennis_weber.unfima.api.services.TimestampHelper
@@ -24,13 +23,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    // TODO: Refactor setting the request body into a static method
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/transactions")
     def answer = getResponseObject(authenticatedClient)
 
@@ -48,12 +41,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/transactions")
     def answer = getResponseObject(authenticatedClient)
 
@@ -81,12 +69,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/transactions")
     def answer = getResponseObject(authenticatedClient)
 
@@ -118,12 +101,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/transactions")
     def answer = getResponseObject(authenticatedClient)
 
@@ -151,12 +129,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/transactions")
     def answer = getResponseObject(authenticatedClient)
 

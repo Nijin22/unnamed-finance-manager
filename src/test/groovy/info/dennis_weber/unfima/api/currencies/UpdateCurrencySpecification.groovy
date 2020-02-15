@@ -1,6 +1,5 @@
 package info.dennis_weber.unfima.api.currencies
 
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
@@ -10,15 +9,10 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     given:
     String newShortName = "NewShortName"
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
-    String json = JsonOutput.toJson(["shortName": newShortName])
+    Map request = ["shortName": newShortName]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.put("/v1.0/currencies/" + id)
     def answerToUpdateCall = authenticatedClient.response.body.text
     def statusToUpdateCall = authenticatedClient.response.statusCode
@@ -39,20 +33,15 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     String newFractionalName = "Satoshi"
     int newDecimalPlaces = 8
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
-    String json = JsonOutput.toJson([
+    Map request = [
         "shortName"     : newShortName,
         "fullName"      : newFullName,
         "fractionalName": newFractionalName,
         "decimalPlaces" : newDecimalPlaces
-    ])
+    ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.put("/v1.0/currencies/" + id)
     def answerToUpdateCall = authenticatedClient.response.body.text
     def statusToUpdateCall = authenticatedClient.response.statusCode
@@ -72,15 +61,10 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
   def "Updating NO attributes of a currency (but still calling the end point)"() {
     given:
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
-    String json = JsonOutput.toJson([])
+    Map request = [:]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.put("/v1.0/currencies/" + id)
     def answerToUpdateCall = authenticatedClient.response.body.text
     def statusToUpdateCall = authenticatedClient.response.statusCode
@@ -103,15 +87,10 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     given:
     int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
     int desiredNewId = 987
-    String json = JsonOutput.toJson(["id": desiredNewId])
+    Map request = ["id": desiredNewId]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.put("/v1.0/currencies/" + id)
     def answerToUpdateCall = new JsonSlurper().parseText(authenticatedClient.response.body.text)
     def statusToUpdateCall = authenticatedClient.response.statusCode
@@ -134,15 +113,10 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     given:
     int id = 987654321 // does not exist
     String newShortName = "doesNotMatter"
-    String json = JsonOutput.toJson(["shortName": newShortName])
+    Map request = ["shortName": newShortName]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(json)
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.put("/v1.0/currencies/" + id)
 
     then:

@@ -1,7 +1,5 @@
 package info.dennis_weber.unfima.api.accounts
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
 
@@ -15,12 +13,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/accounts")
     def answer = getResponseObject(authenticatedClient)
 
@@ -39,12 +32,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/accounts")
     def answer = getResponseObject(authenticatedClient)
 
@@ -62,12 +50,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/accounts")
     def answer = getResponseObject(authenticatedClient)
 
@@ -100,12 +83,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
     ]
 
     when:
-    authenticatedClient.requestSpec({
-      it.body({
-        it.type("application/json")
-        it.text(JsonOutput.toJson(request))
-      })
-    })
+    setRequestBody(authenticatedClient, request)
     authenticatedClient.post("/v1.0/accounts")
     def answer = getResponseObject(authenticatedClient)
 
