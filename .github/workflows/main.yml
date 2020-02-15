@@ -43,6 +43,7 @@ jobs:
           fail_ci_if_error: true
 
   package:
+    if: contains(github.ref, 'master') # Only do that on push to master
     needs: build
     runs-on: ubuntu-latest
     steps:
