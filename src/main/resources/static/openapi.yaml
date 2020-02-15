@@ -470,3 +470,46 @@ paths:
           $ref: '#/components/responses/BadFormat'
         "401":
           $ref: '#/components/responses/BadAuthentication'
+    get:
+      summary: All transactions
+      tags:
+        - Transactions
+      responses:
+        "200":
+          description: List all transactions for authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - type: object
+                      properties:
+                        transactionId:
+                          $ref: '#/components/schemas/TransactionId'
+                    - $ref: '#/components/schemas/TransactionBase'
+                    - type: object
+                      properties:
+                        inputAccounts:
+                          type: array
+                          items:
+                            type: string
+                            description: account name
+                          example:
+                            - "Wallet - Cash"
+                            - "XYZ Bank - Credit Card"
+                        outputAccounts:
+                          type: array
+                          items:
+                            type: string
+                            description: account name
+                            example: "Super-Duper-Restaurant, Mytown"
+                        values:
+                          type: object
+                          description: "Map of currency-short-names to their respective transfered values"
+                          additionalProperties:
+                            type: number
+                          example:
+                            "€": 10.12
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
