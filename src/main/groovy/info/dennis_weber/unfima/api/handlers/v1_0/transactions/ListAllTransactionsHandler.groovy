@@ -63,7 +63,8 @@ class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
         tx.values.put(currencyName, newValue)
       }
 
-      // TODO: Don't simply print account names, they need to include name, isUsersAccount (for highlighting) and ID (for linking)
+      // TODO: Don't simply print account names, they need to include name, isUsersAccount (for highlighting), ID (for linking) and value (possibly for a hover effect)
+      // See openApi
 
       results.put(txId, tx)
     }

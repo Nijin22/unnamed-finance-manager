@@ -91,24 +91,28 @@ components:
       type: integer
       description: "Unique identifier for a account"
       example: 1
+    AccountName:
+      type: string
+      description: "User-chosen account name"
+      example: "XYZ Bank - Savings account"
+      maxLength: 255
+    AccountBelongsToUserFlag:
+      type: boolean
+      description: >
+        Unfima users can create accounts they own and accounts of third
+        parties, like the supermarket they shop at. If the balance of this
+        account should be included in the users wealth, this should be set
+        to 'true'.
+      example: true
     AccountBase:
       type: object
       properties:
         currencyId:
           $ref: '#/components/schemas/CurrencyId'
         accountName:
-          type: string
-          description: "User-chosen account name"
-          example: "XYZ Bank - Savings account"
-          maxLength: 255
+          $ref: '#/components/schemas/AccountName'
         belongsToUser:
-          type: boolean
-          description: >
-            Unfima users can create accounts they own and accounts of third
-            parties, like the supermarket they shop at. If the balance of this
-            account should be included in the users wealth, this should be set
-            to 'true'.
-          example: true
+          $ref: '#/components/schemas/AccountBelongsToUserFlag'
         notes:
           type: string
           description: >
@@ -160,6 +164,22 @@ components:
             The currency of this value is determined by the currency of the
             linked account (by `accountId`).
           example: "3.14"
+    BalanceChangeInTransaction:
+      type: object
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        accountName:
+          $ref: '#/components/schemas/AccountName'
+        belongsToUser:
+          $ref: '#/components/schemas/AccountBelongsToUserFlag'
+        value:
+          type: number
+          description: >
+            The amount added to or removed from this account.
+        currencyName:
+          type: string
+          description: "The shortName used for the affected account"
 
 security:
   - bearerAuth: []
@@ -494,24 +514,35 @@ paths:
                           type: array
                           description: Accounts that lost money during this transaction
                           items:
-                            type: string
-                            description: account name
+                            $ref: '#/components/schemas/BalanceChangeInTransaction'
                           example:
-                            - "Wallet - Cash"
-                            - "XYZ Bank - Credit Card"
+                            - accountId: 111
+                              accountName: "Supermarket Coupons"
+                              belongsToUser: true
+                              value: 5
+                              currencyName: "€"
+                            - accountId: 222
+                              accountName: "Wallet - Cash"
+                              belongsToUser: true
+                              value: 20.75
+                              currencyName: "€"
                         outputAccounts:
                           type: array
                           description: Accounts that gained money during this transaction
                           items:
-                            type: string
-                            description: account name
-                            example: "Super-Duper-Restaurant, Mytown"
+                            $ref: '#/components/schemas/BalanceChangeInTransaction'
+                          example:
+                            accountId: 555
+                            accountName: "Example Supermarket"
+                            belongsToUser: false
+                            value: 25.75
+                            currencyName: "€"
                         values:
                           type: object
                           description: "Map of currency-short-names to their respective transfered values"
                           additionalProperties:
                             type: number
                           example:
-                            "€": 10.12
+                            "€": 25.75
         "401":
           $ref: '#/components/responses/BadAuthentication'
