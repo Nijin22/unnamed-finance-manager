@@ -492,6 +492,7 @@ paths:
                       properties:
                         inputAccounts:
                           type: array
+                          description: Accounts that lost money during this transaction
                           items:
                             type: string
                             description: account name
@@ -500,6 +501,7 @@ paths:
                             - "XYZ Bank - Credit Card"
                         outputAccounts:
                           type: array
+                          description: Accounts that gained money during this transaction
                           items:
                             type: string
                             description: account name

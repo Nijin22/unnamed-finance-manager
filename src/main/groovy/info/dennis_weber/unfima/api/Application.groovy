@@ -7,6 +7,7 @@ import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListAllCurrenciesHa
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListSingleCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.UpdateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.transactions.CreateTransactionHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.transactions.ListAllTransactionsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.AuthenticateHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.BasicUserDetailsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.users.RegisterAccountHandler
@@ -83,6 +84,7 @@ class Application {
         b.bind(UpdateCurrencyHandler)
         b.bind(CreateAccountHandler)
         b.bind(CreateTransactionHandler)
+        b.bind(ListAllTransactionsHandler)
 
         // services
         b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
@@ -133,6 +135,7 @@ class Application {
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
                 methodSpec.post(CreateTransactionHandler)
+                methodSpec.get(ListAllTransactionsHandler)
               }
             }
           })
