@@ -49,17 +49,7 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v1
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Download build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: build-folder
-      - name: Build fat jar
-        run: ./gradlew shadowJar
-      - name: Publish Docker Image to GitHub Package Registry (GPR)
+      - name: Build with Docker, then publish Docker image to GitHub Package Registry (GPR)
         uses: machine-learning-apps/gpr-docker-publish@master
         id: docker
         with:
@@ -103,4 +93,3 @@ jobs:
             --region $RUN_REGION \
             --image gcr.io/${PROJECT_ID}/${SERVICE_NAME}:${GITHUB_REF##*/} \
             --platform managed
-

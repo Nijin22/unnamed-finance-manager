@@ -23,17 +23,39 @@ Unfortunately, there are no such apps available yet, as we are super early in de
 
 Great to hear that! You will need a server that runs this API.
 
-This GitHub Repository's `master` branch is deployed on Google Cloud Run, reachable at
+#### Using the hosted application
+This GitHub repository's `master` branch is deployed on Google Cloud Run, reachable at
 [https://gcr.api.unfima.com](https://gcr.api.unfima.com/), which should be enough to get you started.
 Not that this provides NO guarantees regarding availability at all. Also all submitted data is handled by Google.
 If you care about availability or privacy, we strongly suggest hosting on your own.
 
-You can also use a Docker image:
+#### Using Docker
+This repository's `master` branch is also available as a Docker image via GitHub packages. To setup Unfima as a Docker 
+image, use these commands:
+
+Pull a up-to-date version of Unfima's docker image from GitHub packages:
 ```bash
 docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:master
+``` 
+
+Create a network so that your database image and Unfima can communicate with each other:
+```bash
+docker network create unfima
 ```
 
-Or you could grab a `*.jar` file from the [releases](https://github.com/Nijin22/unnamed-finance-manager/releases). 
+Run MariaDB as your database (you might want to consider changing the passwords):
+```bash
+docker run --rm -d --net=unfima --name=dockerized-mariadb \
+  -e MYSQL_ROOT_PASSWORD=unfima -e MYSQL_USER=unfima -e MYSQL_PASSWORD=unfima -e MYSQL_DATABASE=unfima \
+  mariadb:10
+```
+
+Run Unfima (you might want to change `80` to another port you'd like to use)
+```bash
+docker run --rm -d --net=unfima --name=app -p 80:5050 \
+  -e UNFIMA_DATABASE_JDBC_URL=jdbc:mysql://dockerized-mariadb:3306/unfima -e UNFIMA_DATABASE_USERNAME=unfima -e UNFIMA_DATABASE_PASSWORD=unfima \
+  docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:master
+```
 
 ## Developing this application
 
@@ -46,13 +68,21 @@ Therefore we suggest using this IDE and simply importing the entire repository.
   In the next examples we assume they are both named "unfima"
 
 ### Run locally
-The easiest way is to duplicate the IntelliJ "launch configuration" `TEMPLATE_EDIT_ENV_VARS` and changing
-the environment variables.
+There are two main ways to run this application as a developer: As a IntelliJ run config or from the terminal.
+In both cases you need to set some environmental variables.
 
-If you set "UNFIMA_DATABASE_CLEAN_ON_START" to "true", all data will be wiped from the database and
+If you set `UNFIMA_DATABASE_CLEAN_ON_START` to `true`, all data will be wiped from the database and
 the schema will be re-created. This might be helpful for developing but should NOT be set in productive environments.
 
-If you prefer, you can also simply use the command line:
+Once your application is running, you can visit http://localhost:5050 to access it. On its root path, the API
+documentation will be served.
+
+#### With IntelliJ
+The easiest way is to duplicate the IntelliJ "launch configuration" `TEMPLATE_EDIT_ENV_VARS` and simply updating
+the environment variables for your system.
+
+#### With the terminal / gradlew
+If you prefer, you can also use the command line:
 
 ```bash
 # Set your JAVA_HOME to a JRE 1.8
@@ -68,9 +98,6 @@ export UNFIMA_DATABASE_PASSWORD="<your_super_secret_password_here>"
 # Run the application
 ./gradlew run
 ```
-
-Once your application is running, you can visit http://localhost:5050 to access it. On its root path, the API
-documentation will be served.
 
 ### Run tests
 Either by running them through your IDE (IntelliJ: Use the `All Tests` run config), or by running them via gradle.
