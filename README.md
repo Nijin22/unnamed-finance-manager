@@ -46,13 +46,21 @@ Therefore we suggest using this IDE and simply importing the entire repository.
   In the next examples we assume they are both named "unfima"
 
 ### Run locally
-The easiest way is to duplicate the IntelliJ "launch configuration" `TEMPLATE_EDIT_ENV_VARS` and changing
-the environment variables.
+There are two main ways to run this application as a developer: As a IntelliJ run config or from the terminal.
+In both cases you need to set some environmental variables.
 
-If you set "UNFIMA_DATABASE_CLEAN_ON_START" to "true", all data will be wiped from the database and
+If you set `UNFIMA_DATABASE_CLEAN_ON_START` to `true`, all data will be wiped from the database and
 the schema will be re-created. This might be helpful for developing but should NOT be set in productive environments.
 
-If you prefer, you can also simply use the command line:
+Once your application is running, you can visit http://localhost:5050 to access it. On its root path, the API
+documentation will be served.
+
+#### With IntelliJ
+The easiest way is to duplicate the IntelliJ "launch configuration" `TEMPLATE_EDIT_ENV_VARS` and simply updating
+the environment variables for your system.
+
+#### With the terminal / gradlew
+If you prefer, you can also use the command line:
 
 ```bash
 # Set your JAVA_HOME to a JRE 1.8
@@ -68,9 +76,6 @@ export UNFIMA_DATABASE_PASSWORD="<your_super_secret_password_here>"
 # Run the application
 ./gradlew run
 ```
-
-Once your application is running, you can visit http://localhost:5050 to access it. On its root path, the API
-documentation will be served.
 
 ### Run tests
 Either by running them through your IDE (IntelliJ: Use the `All Tests` run config), or by running them via gradle.

@@ -3,15 +3,16 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
+          <entry key="UNFIMA_DATABASE_CLEAN_ON_START" value="false" />
           <entry key="UNFIMA_DATABASE_JDBC_URL" value="jdbc:mysql://localhost:3306/unfima" />
-          <entry key="UNFIMA_DATABASE_PASSWORD" value="&lt;CHANGE_ME_TO_YOUR_DATABASE&gt;" />
+          <entry key="UNFIMA_DATABASE_PASSWORD" value="&lt;CHANGE_ME_TO_YOUR_DATABASE_PW&gt;" />
           <entry key="UNFIMA_DATABASE_USERNAME" value="unfima" />
         </map>
       </option>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--continuous" />
+      <option name="scriptParameters" value="" />
       <option name="taskDescriptions">
         <list />
       </option>
