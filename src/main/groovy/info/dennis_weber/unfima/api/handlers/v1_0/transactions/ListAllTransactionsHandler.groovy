@@ -1,5 +1,6 @@
 package info.dennis_weber.unfima.api.handlers.v1_0.transactions
 
+
 import com.google.inject.Inject
 import groovy.sql.GroovyRowResult
 import info.dennis_weber.unfima.api.handlers.v1_0.AbstractAuthenticatedUnfimaHandler
@@ -70,7 +71,8 @@ class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
     }
 
     // Render result
-    ctx.render(json(results))
+    List asList = results.collect({ return it.value })
+    ctx.render(json(asList))
   }
 }
 
