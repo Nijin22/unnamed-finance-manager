@@ -31,10 +31,7 @@ class RegisterAccountHandler extends AbstractUnfimaHandler {
     final int MAX_PASSWORD_LENGTH = 100
 
     ctx.request.body.then({ body ->
-      // Body missing?
-      if (body.contentType.type == null || body.text == null || body.text.empty) {
-        throw new BadRequestException("Request body is required but missing")
-      }
+      checkBodyIsPresent(body)
 
       // Parse body
       try {

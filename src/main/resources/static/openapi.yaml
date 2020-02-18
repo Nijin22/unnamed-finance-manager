@@ -91,34 +91,96 @@ components:
       type: integer
       description: "Unique identifier for a account"
       example: 1
+    AccountName:
+      type: string
+      description: "User-chosen account name"
+      example: "XYZ Bank - Savings account"
+      maxLength: 255
+    AccountBelongsToUserFlag:
+      type: boolean
+      description: >
+        Unfima users can create accounts they own and accounts of third
+        parties, like the supermarket they shop at. If the balance of this
+        account should be included in the users wealth, this should be set
+        to 'true'.
+      example: true
     AccountBase:
       type: object
       properties:
         currencyId:
           $ref: '#/components/schemas/CurrencyId'
         accountName:
-          type: string
-          description: "User-chosen account name"
-          example: "XYZ Bank - Savings account"
-          maxLength: 255
+          $ref: '#/components/schemas/AccountName'
         belongsToUser:
-          type: boolean
-          description: >
-            Unfima users can create accounts they own and accounts of third
-            parties, like the supermarket they shop at. If the balance of this
-            account should be included in the users wealth, this should be set
-            to 'true'.
-          example: true
+          $ref: '#/components/schemas/AccountBelongsToUserFlag'
         notes:
           type: string
           description: >
             User-chosen additional infos about this account.
             Can also be an empty string.
-            Some applications might render
+            Some applications might render the content as markdown.
           example: >
             **IBAN**: DE75512108001245126199,
             **Support phone number**: +49 1234 5678900
           maxLength: 16777215
+    TransactionId:
+      type: integer
+      description: "Unique identifier for a transaction"
+    TransactionBase:
+      type: object
+      properties:
+        transactionName:
+          type: string
+          description: "User-provided text to describe the transaction"
+          maxLength: 255
+          example: "Buying groceries"
+        timestamp:
+          type: integer
+          description: "The unix timestamp (in seconds) when this transaction happened"
+          maximum: 9223372036854775807
+        notes:
+          type: string
+          description: >
+            User-provided additional text about this transaction.
+            Might be an empty string.
+            Some applications might render the content as markdown.
+          maxLength: 16777215
+          example: >
+            * Apples\n
+            * Toilet paper\n
+            * Cookies (Do **NOT** eat. For Jane's birthday!)\n
+    BalanceChangeId:
+      type: integer
+      description: "Unique identifier for a balance change"
+    BalanceChangeBase:
+      type: object
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        value:
+          type: number
+          description: >
+            The value of the balance change.
+            The currency of this value is determined by the currency of the
+            linked account (by `accountId`).
+          example: "3.14"
+    BalanceChangeInTransaction:
+      type: object
+      properties:
+        accountId:
+          $ref: '#/components/schemas/AccountId'
+        accountName:
+          $ref: '#/components/schemas/AccountName'
+        belongsToUser:
+          $ref: '#/components/schemas/AccountBelongsToUserFlag'
+        value:
+          type: number
+          description: >
+            The amount added to or removed from this account.
+        currencyName:
+          type: string
+          description: "The shortName used for the affected account"
+
 security:
   - bearerAuth: []
 paths:
@@ -349,7 +411,7 @@ paths:
           $ref: '#/components/responses/NotFound'
   /v1.0/accounts:
     post:
-      summary: Create a new account
+      summary: Create new account
       tags:
         - Accounts
       requestBody:
@@ -376,5 +438,111 @@ paths:
                 example: 1
         "400":
           $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+  /v1.0/transactions:
+    post:
+      summary: Create new transaction
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/TransactionBase'
+                - type: object
+                  properties:
+                    balanceChanges:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/BalanceChangeBase'
+                      description: >
+                        List of all balance changes in this transaction.
+                        For each used currency, the sum of all `value`s in this
+                        list must equal 0.
+                  required:
+                    - transactionName
+                    - timestamp
+                    - notes
+                    - balanceChanges
+              example:
+                transactionName: "Buying groceries"
+                timestamp: 1581711070
+                notes: ""
+                balanceChanges:
+                  - accountId: 123
+                    value: 13.37
+                  - accountId: 456
+                    value: -10
+                  - accountId: 789
+                    value: -3.37
+      responses:
+        "201":
+          description: "Transaction successfully created"
+          content:
+            application/json:
+              schema:
+                description: The ID of the newly created transaction
+                type: integer
+        "400":
+          $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+    get:
+      summary: All transactions
+      tags:
+        - Transactions
+      responses:
+        "200":
+          description: List all transactions for authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - type: object
+                      properties:
+                        transactionId:
+                          $ref: '#/components/schemas/TransactionId'
+                    - $ref: '#/components/schemas/TransactionBase'
+                    - type: object
+                      properties:
+                        inputAccounts:
+                          type: array
+                          description: Accounts that lost money during this transaction
+                          items:
+                            $ref: '#/components/schemas/BalanceChangeInTransaction'
+                          example:
+                            - accountId: 111
+                              accountName: "Supermarket Coupons"
+                              belongsToUser: true
+                              value: 5
+                              currencyName: "€"
+                            - accountId: 222
+                              accountName: "Wallet - Cash"
+                              belongsToUser: true
+                              value: 20.75
+                              currencyName: "€"
+                        outputAccounts:
+                          type: array
+                          description: Accounts that gained money during this transaction
+                          items:
+                            $ref: '#/components/schemas/BalanceChangeInTransaction'
+                          example:
+                            accountId: 555
+                            accountName: "Example Supermarket"
+                            belongsToUser: false
+                            value: 25.75
+                            currencyName: "€"
+                        values:
+                          type: object
+                          description: "Map of currency-short-names to their respective transfered values"
+                          additionalProperties:
+                            type: number
+                          example:
+                            "€": 25.75
         "401":
           $ref: '#/components/responses/BadAuthentication'

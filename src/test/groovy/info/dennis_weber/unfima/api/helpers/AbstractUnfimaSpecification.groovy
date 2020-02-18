@@ -1,5 +1,6 @@
 package info.dennis_weber.unfima.api.helpers
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import ratpack.test.ApplicationUnderTest
 import ratpack.test.http.TestHttpClient
@@ -21,7 +22,7 @@ abstract class AbstractUnfimaSpecification extends Specification {
     // Create a client for endpoints which require authentication
     authenticatedClient = TestHttpClient.testHttpClient(aut, { reqSpec ->
       reqSpec.headers({ headers ->
-        headers.set("Authorization", "Bearer ${UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.token}".toString())
+        headers.set("Authorization", "Bearer ${TestDataProvider.TEST_DATA.user.token}".toString())
       })
     })
 
@@ -33,5 +34,21 @@ abstract class AbstractUnfimaSpecification extends Specification {
 
   def getResponseObject(TestHttpClient client) {
     return slurper.parseText(client.response.body.text)
+  }
+
+  /**
+   * Sets the request body to the specified value in a json format
+   *
+   * @param client
+   * @param body
+   * @return
+   */
+  void setRequestBody(TestHttpClient client, Map body) {
+    client.requestSpec({
+      it.body({
+        it.type("application/json")
+        it.text(JsonOutput.toJson(body))
+      })
+    })
   }
 }

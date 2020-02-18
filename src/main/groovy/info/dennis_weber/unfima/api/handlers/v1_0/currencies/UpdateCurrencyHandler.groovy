@@ -25,10 +25,7 @@ class UpdateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
     }
 
     ctx.request.body.then({ body ->
-      // Body missing?
-      if (body.contentType.type == null) {
-        throw new BadRequestException("Request body is required but missing")
-      }
+      checkBodyIsPresent(body)
 
       // Parsing body
       try {

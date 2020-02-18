@@ -1,6 +1,6 @@
 package info.dennis_weber.unfima.api.currencies
 
-import groovy.json.JsonSlurper
+
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
 
 class GetAllCurrenciesSpecification extends AbstractUnfimaSpecification {

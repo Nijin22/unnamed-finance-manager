@@ -20,10 +20,7 @@ class CreateCurrencyHandler extends AbstractAuthenticatedUnfimaHandler {
   @Override
   void handleAuthenticated(GroovyContext ctx, int userId) {
     ctx.request.body.then({ body ->
-      // Body missing?
-      if (body.contentType.type == null) {
-        throw new BadRequestException("Request body is required but missing")
-      }
+      checkBodyIsPresent(body)
 
       // Parsing body
       try {
