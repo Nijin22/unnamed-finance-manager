@@ -23,17 +23,39 @@ Unfortunately, there are no such apps available yet, as we are super early in de
 
 Great to hear that! You will need a server that runs this API.
 
-This GitHub Repository's `master` branch is deployed on Google Cloud Run, reachable at
+#### Using the hosted application
+This GitHub repository's `master` branch is deployed on Google Cloud Run, reachable at
 [https://gcr.api.unfima.com](https://gcr.api.unfima.com/), which should be enough to get you started.
 Not that this provides NO guarantees regarding availability at all. Also all submitted data is handled by Google.
 If you care about availability or privacy, we strongly suggest hosting on your own.
 
-You can also use a Docker image:
+#### Using Docker
+This repository's `master` branch is also available as a Docker image via GitHub packages. To setup Unfima as a Docker 
+image, use these commands:
+
+Pull a up-to-date version of Unfima's docker image from GitHub packages:
 ```bash
 docker pull docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:master
+``` 
+
+Create a network so that your database image and Unfima can communicate with each other:
+```bash
+docker network create unfima
 ```
 
-Or you could grab a `*.jar` file from the [releases](https://github.com/Nijin22/unnamed-finance-manager/releases). 
+Run MariaDB as your database (you might want to consider changing the passwords):
+```bash
+docker run --rm -d --net=unfima --name=dockerized-mariadb \
+  -e MYSQL_ROOT_PASSWORD=unfima -e MYSQL_USER=unfima -e MYSQL_PASSWORD=unfima -e MYSQL_DATABASE=unfima \
+  mariadb:10
+```
+
+Run Unfima (you might want to change `80` to another port you'd like to use)
+```bash
+docker run --rm -d --net=unfima --name=app -p 80:5050 \
+  -e UNFIMA_DATABASE_JDBC_URL=jdbc:mysql://dockerized-mariadb:3306/unfima -e UNFIMA_DATABASE_USERNAME=unfima -e UNFIMA_DATABASE_PASSWORD=unfima \
+  docker.pkg.github.com/nijin22/unnamed-finance-manager/unfima:master
+```
 
 ## Developing this application
 
