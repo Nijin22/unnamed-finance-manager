@@ -7,6 +7,8 @@ import info.dennis_weber.unfima.api.handlers.v1_0.AbstractAuthenticatedUnfimaHan
 import info.dennis_weber.unfima.api.services.DatabaseService
 import ratpack.groovy.handling.GroovyContext
 
+import java.sql.Clob
+
 import static ratpack.jackson.Jackson.json
 
 class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
@@ -41,7 +43,7 @@ class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
         tx.transactionId = txId as int
         tx.transactionName = row.get("transactionName")
         tx.timestamp = row.get("timestamp") as long
-        tx.notes = row.get("notes")
+        tx.notes = (row.get("notes") as Clob).characterStream.text // SQL type is 'TEXT' which does return a 'CLOB'.
       }
 
       // Input and output accounts:
@@ -95,4 +97,3 @@ final class ResponseAccounts {
   BigDecimal value
   String currencyName
 }
-// TODO: Write tests
