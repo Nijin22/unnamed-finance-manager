@@ -1,7 +1,7 @@
 package info.dennis_weber.unfima.api.users
 
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 import info.dennis_weber.unfima.api.services.CurrencyDto
 import ratpack.http.client.ReceivedResponse
 
@@ -27,7 +27,7 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
 
   def "Registering an email that already exists"() {
     given:
-    String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
+    String email = TestDataProvider.TEST_DATA.user.email
     String password = "doesNotMatter"
     CurrencyDto starterCurrency = new CurrencyDto()
     starterCurrency.shortName = "doesNotMatter"
@@ -123,7 +123,7 @@ class RegisterAccountSpecification extends AbstractUnfimaSpecification {
   }
 
   def "Registering with a starterCurrency that misses something"() {
-    String email = UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
+    String email = TestDataProvider.TEST_DATA.user.email
     String password = "doesNotMatter"
     CurrencyDto starterCurrency = new CurrencyDto()
     // note that the short name is missing

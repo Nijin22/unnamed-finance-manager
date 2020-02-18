@@ -1,7 +1,7 @@
 package info.dennis_weber.unfima.api.transactions
 
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 import info.dennis_weber.unfima.api.services.TimestampHelper
 
 class CreateTransactionSpecification extends AbstractUnfimaSpecification {
@@ -12,11 +12,11 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
                    "notes"          : "",
                    balanceChanges   : [
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.ownAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.ownAccount.id,
                            "value"    : new BigDecimal("-10")
                        ],
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.thirdPartyAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.thirdPartyAccount.id,
                            "value"    : new BigDecimal("10")
                        ]
                    ]
@@ -58,11 +58,11 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
                    "notes"          : "",
                    balanceChanges   : [
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.ownAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.ownAccount.id,
                            "value"    : new BigDecimal("-10")
                        ],
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.thirdPartyAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.thirdPartyAccount.id,
                            "value"    : new BigDecimal("10.01")
                        ]
                    ]
@@ -86,15 +86,15 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
                    "notes"          : "",
                    balanceChanges   : [
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.ownAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.ownAccount.id,
                            "value"    : new BigDecimal("-10")
                        ],
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.anotherOwnAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.anotherOwnAccount.id,
                            "value"    : new BigDecimal("-5.12")
                        ],
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.thirdPartyAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.thirdPartyAccount.id,
                            "value"    : new BigDecimal("15.12")
                        ]
                    ]
@@ -122,7 +122,7 @@ class CreateTransactionSpecification extends AbstractUnfimaSpecification {
                            "value"    : new BigDecimal("-10")
                        ],
                        [
-                           "accountId": UnfimaServerBackedApplicationUnderTest.TEST_DATA.accounts.thirdPartyAccount.id,
+                           "accountId": TestDataProvider.TEST_DATA.accounts.thirdPartyAccount.id,
                            "value"    : new BigDecimal("10")
                        ]
                    ]

@@ -2,13 +2,13 @@ package info.dennis_weber.unfima.api.currencies
 
 import groovy.json.JsonSlurper
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 
 class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
   def "Updating the shortName of a currency"() {
     given:
     String newShortName = "NewShortName"
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
     Map request = ["shortName": newShortName]
 
     when:
@@ -32,7 +32,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     String newFullName = "Bitcoin"
     String newFractionalName = "Satoshi"
     int newDecimalPlaces = 8
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
     Map request = [
         "shortName"     : newShortName,
         "fullName"      : newFullName,
@@ -60,7 +60,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating NO attributes of a currency (but still calling the end point)"() {
     given:
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
     Map request = [:]
 
     when:
@@ -76,16 +76,16 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     statusToUpdateCall == 204
     answerToUpdateCall.empty
     // all values stay the same
-    updatedCurrency.id == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
-    updatedCurrency.shortName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.shortName
-    updatedCurrency.fullName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.fullName
-    updatedCurrency.fractionalName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.fractionalName
-    updatedCurrency.decimalPlaces == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.decimalPlaces
+    updatedCurrency.id == TestDataProvider.TEST_DATA.currency.id
+    updatedCurrency.shortName == TestDataProvider.TEST_DATA.currency.shortName
+    updatedCurrency.fullName == TestDataProvider.TEST_DATA.currency.fullName
+    updatedCurrency.fractionalName == TestDataProvider.TEST_DATA.currency.fractionalName
+    updatedCurrency.decimalPlaces == TestDataProvider.TEST_DATA.currency.decimalPlaces
   }
 
   def "Updating the ID of a currency"() {
     given:
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
     int desiredNewId = 987
     Map request = ["id": desiredNewId]
 
@@ -102,11 +102,11 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
     statusToUpdateCall == 400
     answerToUpdateCall.errorMsg == "You requested to change the currency's ID from '$id' to '$desiredNewId', but changing IDs is not possible."
     // all values stay the same
-    updatedCurrency.id == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
-    updatedCurrency.shortName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.shortName
-    updatedCurrency.fullName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.fullName
-    updatedCurrency.fractionalName == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.fractionalName
-    updatedCurrency.decimalPlaces == UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.decimalPlaces
+    updatedCurrency.id == TestDataProvider.TEST_DATA.currency.id
+    updatedCurrency.shortName == TestDataProvider.TEST_DATA.currency.shortName
+    updatedCurrency.fullName == TestDataProvider.TEST_DATA.currency.fullName
+    updatedCurrency.fractionalName == TestDataProvider.TEST_DATA.currency.fractionalName
+    updatedCurrency.decimalPlaces == TestDataProvider.TEST_DATA.currency.decimalPlaces
   }
 
   def "Updating a currency that does not exist"() {
@@ -125,7 +125,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating a currency with a broken request body"() {
     given:
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
     String json = "this isn't actually json"
 
     when:
@@ -143,7 +143,7 @@ class UpdateCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Updating a currency but missing the body"() {
     given:
-    int id = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id
+    int id = TestDataProvider.TEST_DATA.currency.id
 
     when:
     authenticatedClient.put("/v1.0/currencies/" + id)

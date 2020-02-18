@@ -2,7 +2,7 @@ package info.dennis_weber.unfima.api.users
 
 
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 
 /**
  * Tests the basic user details endpoint, but also the AbstractAuthenticatedUnfimaHandler
@@ -15,8 +15,8 @@ class BasicUserDetailsSpecification extends AbstractUnfimaSpecification {
 
     then:
     authenticatedClient.response.statusCode == 200
-    answer.id == UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.id
-    answer.email == UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.email
+    answer.id == TestDataProvider.TEST_DATA.user.id
+    answer.email == TestDataProvider.TEST_DATA.user.email
   }
 
   def "Getting basic user details without a token"() {

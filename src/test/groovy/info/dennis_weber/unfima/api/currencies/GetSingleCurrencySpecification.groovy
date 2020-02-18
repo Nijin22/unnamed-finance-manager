@@ -2,12 +2,12 @@ package info.dennis_weber.unfima.api.currencies
 
 
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 
 class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
   def "Getting details for a currency"() {
     given:
-    Map testData = UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency
+    Map testData = TestDataProvider.TEST_DATA.currency
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + testData.id)
@@ -38,7 +38,7 @@ class GetSingleCurrencySpecification extends AbstractUnfimaSpecification {
 
   def "Getting details for a currency that belongs to another user"() {
     given:
-    int otherUsersCurrencyId = UnfimaServerBackedApplicationUnderTest.TEST_DATA.otherUserCurrency.id
+    int otherUsersCurrencyId = TestDataProvider.TEST_DATA.otherUserCurrency.id
 
     when:
     authenticatedClient.get("/v1.0/currencies/" + otherUsersCurrencyId)

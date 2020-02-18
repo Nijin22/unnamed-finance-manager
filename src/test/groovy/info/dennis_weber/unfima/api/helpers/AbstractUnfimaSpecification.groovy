@@ -22,7 +22,7 @@ abstract class AbstractUnfimaSpecification extends Specification {
     // Create a client for endpoints which require authentication
     authenticatedClient = TestHttpClient.testHttpClient(aut, { reqSpec ->
       reqSpec.headers({ headers ->
-        headers.set("Authorization", "Bearer ${UnfimaServerBackedApplicationUnderTest.TEST_DATA.user.token}".toString())
+        headers.set("Authorization", "Bearer ${TestDataProvider.TEST_DATA.user.token}".toString())
       })
     })
 

@@ -1,12 +1,12 @@
 package info.dennis_weber.unfima.api.accounts
 
 import info.dennis_weber.unfima.api.helpers.AbstractUnfimaSpecification
-import info.dennis_weber.unfima.api.helpers.UnfimaServerBackedApplicationUnderTest
+import info.dennis_weber.unfima.api.helpers.TestDataProvider
 
 class CreateAccountSpecification extends AbstractUnfimaSpecification {
   def "Creating a new account"() {
     given:
-    Map request = ["currencyId"   : UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id,
+    Map request = ["currencyId"   : TestDataProvider.TEST_DATA.currency.id,
                    "accountName"  : "TestBank - Test account",
                    "belongsToUser": true,
                    "notes"        : "",
@@ -43,7 +43,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
 
   def "Creating a new account without a required field"() {
     given:
-    Map request = ["currencyId"   : UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id,
+    Map request = ["currencyId"   : TestDataProvider.TEST_DATA.currency.id,
                    // Not that 'accountName' is missing
                    "belongsToUser": true,
                    "notes"        : "",
@@ -76,7 +76,7 @@ class CreateAccountSpecification extends AbstractUnfimaSpecification {
         "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
         "way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, way, " +
         "too long."
-    Map request = ["currencyId"   : UnfimaServerBackedApplicationUnderTest.TEST_DATA.currency.id,
+    Map request = ["currencyId"   : TestDataProvider.TEST_DATA.currency.id,
                    "accountName"  : tooLongAccountName,
                    "belongsToUser": true,
                    "notes"        : "",
