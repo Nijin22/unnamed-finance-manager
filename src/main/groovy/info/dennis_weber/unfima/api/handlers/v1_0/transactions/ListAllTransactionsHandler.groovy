@@ -7,8 +7,6 @@ import info.dennis_weber.unfima.api.handlers.v1_0.AbstractAuthenticatedUnfimaHan
 import info.dennis_weber.unfima.api.services.DatabaseService
 import ratpack.groovy.handling.GroovyContext
 
-import java.sql.Clob
-
 import static ratpack.jackson.Jackson.json
 
 class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
@@ -43,16 +41,7 @@ class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
         tx.transactionId = txId as int
         tx.transactionName = row.get("transactionName")
         tx.timestamp = row.get("timestamp") as long
-        def notes = row.get("notes")
-        if (notes instanceof String) {
-          // DB Backend == MariaDB or MySql
-          tx.notes = notes
-        } else if (notes instanceof Clob) {
-          // DB Backend == H2
-          tx.notes = (row.get("notes") as Clob).characterStream.text // SQL type is 'TEXT' which does return a 'CLOB'.
-        } else {
-          throw new RuntimeException("Transaction notes in unexpected format: ${notes.class}")
-        }
+        tx.notes = DatabaseService.convertPossibleClobToString(row.get("notes"))
       }
 
       // Input and output accounts:

@@ -2,6 +2,7 @@ package info.dennis_weber.unfima.api
 
 import info.dennis_weber.unfima.api.handlers.v1_0.ExceptionHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.accounts.CreateAccountHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.accounts.ListSingleAccountHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.CreateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListAllCurrenciesHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListSingleCurrencyHandler
@@ -85,6 +86,7 @@ class Application {
         b.bind(CreateAccountHandler)
         b.bind(CreateTransactionHandler)
         b.bind(ListAllTransactionsHandler)
+        b.bind(ListSingleAccountHandler)
 
         // services
         b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
@@ -126,6 +128,12 @@ class Application {
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
                 methodSpec.post(CreateAccountHandler)
+              }
+            }
+
+            c.path(":accountId") { ctx ->
+              ctx.byMethod() { methodSpec ->
+                methodSpec.get(ListSingleAccountHandler)
               }
             }
           })

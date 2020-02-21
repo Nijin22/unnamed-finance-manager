@@ -43,6 +43,38 @@ class AccountService {
 
     return result
   }
+
+  /**
+   * Get all details available for a given account ID.
+   *
+   * @param accountId
+   * @param userId
+   * @return dto with all fields filled, or null if accountId does not exist or does not belong to the userId
+   */
+  AccountDto getDetails(int accountId, int userId) {
+    final String selectStatement = "SELECT * FROM accountsWithBalance WHERE userId = ? AND accountId = ?"
+    GroovyRowResult row = dbService.groovySql.firstRow(selectStatement, [userId, accountId])
+
+    if (row == null) {
+      return null
+    }
+
+    return extractDtoFromRow(row)
+  }
+
+  private static AccountDto extractDtoFromRow(GroovyRowResult row) {
+    AccountDto dto = new AccountDto()
+
+    dto.accountId = row.get("accountId") as Integer
+    dto.currencyId = row.get("currencyId") as Integer
+    dto.accountName = row.get("accountName")
+    dto.belongsToUser = row.get("belongsToUser") as Boolean
+    dto.notes = DatabaseService.convertPossibleClobToString(row.get("notes"))
+    dto.currencyName = row.get("currencyName")
+    dto.currentBalance = row.get("currentBalance") as BigDecimal
+
+    return dto
+  }
 }
 
 final class AccountDto extends AbstractDto {
@@ -51,6 +83,8 @@ final class AccountDto extends AbstractDto {
   String accountName
   Boolean belongsToUser
   String notes
+  String currencyName
+  BigDecimal currentBalance
 
   //////////////////////
   // Checked Setters: //

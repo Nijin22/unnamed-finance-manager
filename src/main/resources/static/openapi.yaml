@@ -526,6 +526,8 @@ paths:
                 $ref: '#/components/schemas/AccountToReturn'
         "401":
           $ref: '#/components/responses/BadAuthentication'
+        "404":
+          $ref: '#/components/responses/NotFound'
   /v1.0/transactions:
     post:
       summary: Create new transaction
