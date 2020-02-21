@@ -62,6 +62,25 @@ class AccountService {
     return extractDtoFromRow(row)
   }
 
+  List<AccountDto> getAllAccounts(int userId, boolean onlyBelongingAccounts, boolean onlyThirdPartyAccounts) {
+    List<AccountDto> result = []
+
+    String selectStatement = "SELECT * FROM accountsWithBalance WHERE userId = ?"
+    if (onlyBelongingAccounts) {
+      selectStatement += " AND belongsToUser = '1'"
+    }
+    if (onlyThirdPartyAccounts) {
+      selectStatement += " AND belongsToUser = '0'"
+    }
+
+    List<GroovyRowResult> rows = dbService.groovySql.rows(selectStatement, [userId])
+    rows.each {
+      result.add(extractDtoFromRow(it))
+    }
+
+    return result
+  }
+
   private static AccountDto extractDtoFromRow(GroovyRowResult row) {
     AccountDto dto = new AccountDto()
 

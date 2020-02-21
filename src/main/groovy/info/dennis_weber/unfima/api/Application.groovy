@@ -2,6 +2,7 @@ package info.dennis_weber.unfima.api
 
 import info.dennis_weber.unfima.api.handlers.v1_0.ExceptionHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.accounts.CreateAccountHandler
+import info.dennis_weber.unfima.api.handlers.v1_0.accounts.ListAllAccountsHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.accounts.ListSingleAccountHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.CreateCurrencyHandler
 import info.dennis_weber.unfima.api.handlers.v1_0.currencies.ListAllCurrenciesHandler
@@ -87,6 +88,7 @@ class Application {
         b.bind(CreateTransactionHandler)
         b.bind(ListAllTransactionsHandler)
         b.bind(ListSingleAccountHandler)
+        b.bind(ListAllAccountsHandler)
 
         // services
         b.bindInstance(new DatabaseService(databaseJdbcUrl, databaseUsername, databasePassword))
@@ -110,8 +112,8 @@ class Application {
           prefix("v1.0/currencies", { c ->
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
-                methodSpec.post(CreateCurrencyHandler)
                 methodSpec.get(ListAllCurrenciesHandler)
+                methodSpec.post(CreateCurrencyHandler)
               }
             }
 
@@ -127,6 +129,7 @@ class Application {
           prefix("v1.0/accounts", { c ->
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
+                methodSpec.get(ListAllAccountsHandler)
                 methodSpec.post(CreateAccountHandler)
               }
             }
@@ -142,8 +145,8 @@ class Application {
           prefix("v1.0/transactions", { c ->
             c.path("") { ctx ->
               ctx.byMethod() { methodSpec ->
-                methodSpec.post(CreateTransactionHandler)
                 methodSpec.get(ListAllTransactionsHandler)
+                methodSpec.post(CreateTransactionHandler)
               }
             }
           })
