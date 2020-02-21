@@ -43,7 +43,16 @@ class ListAllTransactionsHandler extends AbstractAuthenticatedUnfimaHandler {
         tx.transactionId = txId as int
         tx.transactionName = row.get("transactionName")
         tx.timestamp = row.get("timestamp") as long
-        tx.notes = (row.get("notes") as Clob).characterStream.text // SQL type is 'TEXT' which does return a 'CLOB'.
+        def notes = row.get("notes")
+        if (notes instanceof String) {
+          // DB Backend == MariaDB or MySql
+          tx.notes = notes
+        } else if (notes instanceof Clob) {
+          // DB Backend == H2
+          tx.notes = (row.get("notes") as Clob).characterStream.text // SQL type is 'TEXT' which does return a 'CLOB'.
+        } else {
+          throw new RuntimeException("Transaction notes in unexpected format: ${notes.class}")
+        }
       }
 
       // Input and output accounts:
