@@ -123,6 +123,31 @@ components:
             **IBAN**: DE75512108001245126199,
             **Support phone number**: +49 1234 5678900
           maxLength: 16777215
+    AccountToReturn:
+      allOf:
+        - type: object
+          properties:
+            accountId:
+              $ref: '#/components/schemas/AccountId'
+        - $ref: '#/components/schemas/AccountBase'
+        - type: object
+          properties:
+            currencyName:
+              type: string
+              description: "The 'shortName' of the used currency"
+              example: "€"
+            currentBalance:
+              type: number
+              description: >
+                The current balance / worth of this account as
+                determined by summing up all balance changes linked
+                to this account.
+                Might also be negative for accounts that are in dept.
+                <br>
+                The balance also exists for third-party accounts,
+                but the number does not hold much usefullness
+                as it obviously misses transactions by other people.
+              example: "1234.56"
     TransactionId:
       type: integer
       description: "Unique identifier for a transaction"
@@ -438,6 +463,67 @@ paths:
                 example: 1
         "400":
           $ref: '#/components/responses/BadFormat'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+    get:
+      summary: List all accounts
+      tags:
+        - Accounts
+      parameters:
+        - name: onlyBelongingAccounts
+          in: query
+          required: false
+          description: >
+            Set to `true` if the results should only contain accounts that are
+            owned by the user. (I. e. filter out third-party accounts.)
+            Setting both `onlyBelongingAccounts` and `onlyThirdPartyAccounts` to
+            true will result in an empty set.
+          schema:
+            type: boolean
+            default: false
+        - name: onlyThirdPartyAccounts
+          in: query
+          required: false
+          description: >
+            Set to `true` if the results should only contain accounts that are
+            NOT owned by the user. (I. e. only show third-party accounts.)
+            Setting both `onlyBelongingAccounts` and `onlyThirdPartyAccounts` to
+            true will result in an empty set.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "201":
+          description: "List of accounts"
+          content:
+            application/json:
+              schema:
+                description: >
+                  A list of all accounts belonging to this user, with additional
+                  aggrated data for these accounts.
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountToReturn'
+        "401":
+          $ref: '#/components/responses/BadAuthentication'
+  /v1.0/accounts/{accountId}:
+    get:
+      summary: Info about this account
+      tags:
+        - Accounts
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/AccountId'
+      responses:
+        "201":
+          description: "Infos about a given account"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountToReturn'
         "401":
           $ref: '#/components/responses/BadAuthentication'
   /v1.0/transactions:
