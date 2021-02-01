@@ -23,12 +23,6 @@ Unfortunately, there are no such apps available yet, as we are super early in de
 
 Great to hear that! You will need a server that runs this API.
 
-#### Using the hosted application
-This GitHub repository's `master` branch is deployed on Google Cloud Run, reachable at
-[https://gcr.api.unfima.com](https://gcr.api.unfima.com/), which should be enough to get you started.
-Not that this provides NO guarantees regarding availability at all. Also all submitted data is handled by Google.
-If you care about availability or privacy, we strongly suggest hosting on your own.
-
 #### Using Docker
 This repository's `master` branch is also available as a Docker image via GitHub packages. To setup Unfima as a Docker 
 image, use these commands:
